@@ -212,7 +212,8 @@ class CrossMathGame {
     }
 
     loadTheme() {
-        return localStorage.getItem('crossmath_theme') !== 'light';
+        // Varsayılan: light mode (gazete teması)
+        return localStorage.getItem('crossmath_theme') === 'dark';
     }
 
     startGame(mode) {

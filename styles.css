@@ -12,46 +12,50 @@
     --warning: #FF9800;
 }
 
-/* Light Mode */
+/* Light Mode - Klasik Gazete Bulmacası Teması */
 body.light-mode {
-    --bg: #FAFAFA;
-    --card: #FFFFFF;
-    --card-alt: #F5F5F5;
-    --text: #212121;
-    --text-secondary: #757575;
-    --text-muted: #9E9E9E;
-    --border: #E0E0E0;
-    --grid-bg: #FFFFFF;
-    --cell-number: #FFF8E1;
-    --cell-number-text: #5D4037;
+    --bg: #F5F0E6;
+    --card: #FFFEF9;
+    --card-alt: #F0EBE0;
+    --text: #1A1A1A;
+    --text-secondary: #4A4A4A;
+    --text-muted: #7A7A7A;
+    --border: #D4C9B8;
+    --grid-bg: #FFFEF9;
+    --cell-number: #FFF9E6;
+    --cell-number-text: #2C2416;
     --cell-blank: #FFFFFF;
-    --cell-blank-border: #BDBDBD;
-    --cell-result: #E3F2FD;
-    --cell-result-text: #1565C0;
+    --cell-blank-border: #8B7355;
+    --cell-result: #E8F4E8;
+    --cell-result-text: #1B5E20;
+    --cell-operator: transparent;
+    --cell-operator-text: #333333;
     --cell-valid: #C8E6C9;
-    --cell-valid-text: #2E7D32;
-    --void-bg: #ECEFF1;
+    --cell-valid-text: #1B5E20;
+    --void-bg: transparent;
 }
 
 /* Dark Mode */
 body.dark-mode {
-    --bg: #121212;
-    --card: #1E1E1E;
+    --bg: #1A1A1A;
+    --card: #252525;
     --card-alt: #2D2D2D;
-    --text: #FFFFFF;
+    --text: #F5F5F5;
     --text-secondary: #B0B0B0;
     --text-muted: #757575;
-    --border: #424242;
-    --grid-bg: #2D2D2D;
-    --cell-number: #3E2723;
-    --cell-number-text: #FFCC80;
-    --cell-blank: #37474F;
-    --cell-blank-border: #78909C;
-    --cell-result: #1A237E;
-    --cell-result-text: #90CAF9;
+    --border: #404040;
+    --grid-bg: #252525;
+    --cell-number: #3D3420;
+    --cell-number-text: #FFE082;
+    --cell-blank: #2A2A2A;
+    --cell-blank-border: #8B7355;
+    --cell-result: #1B3D1B;
+    --cell-result-text: #81C784;
+    --cell-operator: transparent;
+    --cell-operator-text: #CCCCCC;
     --cell-valid: #1B5E20;
     --cell-valid-text: #A5D6A7;
-    --void-bg: #1E1E1E;
+    --void-bg: transparent;
 }
 
 body {
@@ -358,77 +362,82 @@ body {
     padding: 8px;
 }
 
-/* Puzzle Grid - Crossword Style */
+/* Puzzle Grid - Klasik Crossword Izgarası */
 #puzzle-grid {
     display: grid;
-    gap: 1px;
+    gap: 0;
     background: var(--grid-bg);
-    padding: 8px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 2px solid var(--border);
 }
 
 .puzzle-cell {
-    width: clamp(32px, 8vw, 42px);
-    height: clamp(32px, 8vw, 42px);
+    width: clamp(40px, 12vw, 52px);
+    height: clamp(40px, 12vw, 52px);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(14px, 3.5vw, 18px);
+    font-size: clamp(16px, 4vw, 22px);
     font-weight: 700;
     transition: all 0.15s ease;
     user-select: none;
-    border-radius: 4px;
 }
 
-/* Void cells - crossword empty spaces */
+/* Void cells - tamamen görünmez */
 .cell-void {
-    background: var(--void-bg);
+    background: transparent;
+    border: none;
 }
 
-/* Number cells - yellow/beige like reference */
+/* Number cells - sarı/bej kutu */
 .cell-number {
     background: var(--cell-number);
     color: var(--cell-number-text);
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 2px solid #B8A078;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
 }
 
-/* Blank cells - white with dashed border */
+/* Blank cells - beyaz, kesikli kenarlık */
 .cell-number.blank {
     background: var(--cell-blank);
     color: var(--text-muted);
     border: 2px dashed var(--cell-blank-border);
     cursor: pointer;
     font-weight: 400;
+    font-size: clamp(14px, 3.5vw, 18px);
 }
 
 .cell-number.blank:hover {
     border-color: var(--primary);
-    background: #E3F2FD;
+    background: #FFF8E1;
+    border-style: solid;
 }
 
 .cell-number.blank.drag-over {
-    transform: scale(1.05);
+    transform: scale(1.08);
     border-color: var(--primary);
     border-style: solid;
-    background: #BBDEFB;
+    background: #FFF3C4;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .cell-number.blank.selected {
     border: 2px solid var(--primary);
     box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.3);
-    background: #E3F2FD;
+    background: #FFF8E1;
 }
 
 .cell-number.blank.filled {
     background: var(--cell-number);
     color: var(--cell-number-text);
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 2px solid #B8A078;
     font-weight: 700;
 }
 
-/* Validation - green when equation is correct */
+/* Validation - yeşil */
 .cell-number.valid,
 .cell-number.blank.filled.valid {
     background: var(--cell-valid) !important;
@@ -449,11 +458,13 @@ body {
     animation: shake 0.4s ease;
 }
 
-/* Result cells - blue tint */
+/* Result cells - yeşilimsi kutu */
 .cell-result {
     background: var(--cell-result);
     color: var(--cell-result-text);
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 2px solid #7CB87C;
+    border-radius: 4px;
+    font-weight: 800;
 }
 
 .cell-result.equation-valid {
@@ -462,72 +473,81 @@ body {
     border-color: var(--success) !important;
 }
 
-/* Operator cells */
+/* Operator cells - kutusuz, sadece sembol */
 .cell-operator {
-    background: var(--grid-bg);
-    color: var(--text-secondary);
-    font-size: clamp(16px, 4vw, 20px);
-    font-weight: 500;
-}
-
-.cell-equals {
-    background: var(--grid-bg);
-    color: var(--text-secondary);
-    font-size: clamp(16px, 4vw, 20px);
+    background: transparent;
+    color: var(--cell-operator-text);
+    font-size: clamp(18px, 5vw, 24px);
     font-weight: 600;
+    border: none;
 }
 
-/* Number Bank */
+/* Equals - kutusuz */
+.cell-equals {
+    background: transparent;
+    color: var(--cell-operator-text);
+    font-size: clamp(18px, 5vw, 24px);
+    font-weight: 700;
+    border: none;
+}
+
+/* Number Bank - Sayı Havuzu */
 #number-bank {
     background: var(--card);
-    padding: 12px;
-    border-radius: 12px;
-    margin-top: 12px;
-    border: 1px solid var(--border);
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 16px;
+    border: 2px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .bank-label {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
 }
 
 #bank-numbers {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
 }
 
 .bank-number {
-    width: clamp(40px, 11vw, 50px);
-    height: clamp(40px, 11vw, 50px);
+    width: clamp(44px, 12vw, 54px);
+    height: clamp(44px, 12vw, 54px);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(16px, 4vw, 20px);
+    font-size: clamp(18px, 4.5vw, 22px);
     font-weight: 700;
     background: var(--cell-number);
-    border: 2px solid #D7CCC8;
-    border-radius: 8px;
+    border: 2px solid #B8A078;
+    border-radius: 6px;
     color: var(--cell-number-text);
     cursor: grab;
     transition: all 0.15s ease;
     user-select: none;
     touch-action: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .bank-number:hover {
-    transform: scale(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     border-color: var(--primary);
 }
 
 .bank-number:active {
     cursor: grabbing;
+    transform: scale(0.95);
 }
 
 .bank-number.dragging {
@@ -538,12 +558,14 @@ body {
     background: var(--primary);
     border-color: var(--primary);
     color: white;
+    box-shadow: 0 4px 12px rgba(74, 144, 217, 0.4);
 }
 
 .bank-number.used {
-    opacity: 0.3;
+    opacity: 0.25;
     cursor: not-allowed;
-    transform: scale(0.9);
+    transform: scale(0.85);
+    box-shadow: none;
 }
 
 /* Drag Preview */
