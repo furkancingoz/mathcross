@@ -7,7 +7,8 @@ class CrossMathGame {
             easy: { ops: ['+', '-'], iqMultiplier: 0.8, maxNum: 12 },
             medium: { ops: ['+', '-', '×'], iqMultiplier: 1.0, maxNum: 20 },
             hard: { ops: ['+', '-', '×', '÷'], iqMultiplier: 1.3, maxNum: 30 },
-            extreme: { ops: ['+', '-', '×', '÷'], iqMultiplier: 1.6, maxNum: 50 }
+            extreme: { ops: ['+', '-', '×', '÷'], iqMultiplier: 1.6, maxNum: 50 },
+            kubo: { ops: ['+', '-', '×', '÷'], iqMultiplier: 2.0, maxNum: 99 }
         };
 
         this.maxLevels = 25;
@@ -254,15 +255,16 @@ class CrossMathGame {
             easy: 0.25,
             medium: 0.40,
             hard: 0.55,
-            extreme: 0.70
+            extreme: 0.70,
+            kubo: 0.80
         };
 
         const baseRatio = modeBaseRatio[this.currentMode] || 0.25;
-        const maxIncrease = 0.90 - baseRatio;
+        const maxIncrease = 0.95 - baseRatio;
         const blankRatio = baseRatio + levelFactor * maxIncrease;
 
         // Template seç (zorluk ve level'a göre)
-        const modeIndex = ['easy', 'medium', 'hard', 'extreme'].indexOf(this.currentMode);
+        const modeIndex = ['easy', 'medium', 'hard', 'extreme', 'kubo'].indexOf(this.currentMode);
         const complexity = modeIndex + Math.floor(this.currentLevel / 6);
 
         const templates = this.getCrosswordTemplates();
@@ -1038,7 +1040,7 @@ class CrossMathGame {
     displayHighScores() {
         const container = document.getElementById('scores-list');
         container.innerHTML = '';
-        const modes = ['easy', 'medium', 'hard', 'extreme'];
+        const modes = ['easy', 'medium', 'hard', 'extreme', 'kubo'];
         let hasScores = false;
 
         modes.forEach(mode => {

@@ -193,6 +193,16 @@ body {
     color: var(--text-muted);
 }
 
+.kubo-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+}
+.kubo-btn .mode-name,
+.kubo-btn .mode-desc,
+.kubo-btn .mode-arrow {
+    color: white;
+}
+
 .high-scores {
     margin-top: 40px;
     text-align: center;
