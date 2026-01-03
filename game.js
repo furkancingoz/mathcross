@@ -552,7 +552,7 @@ class CrossMathGame {
                 }
             }
 
-            // Bölme varsa düzelt
+            // Operatörlere göre sayıları düzelt
             for (let i = 0; i < eqOps.length; i++) {
                 if (eqOps[i] === '÷') {
                     const a = nums[i];
@@ -563,12 +563,19 @@ class CrossMathGame {
                         nums[i + 1] = divisor;
                         nums[i] = divisor * this.randInt(1, Math.floor(maxNum / divisor));
                     }
+                } else if (eqOps[i] === '-') {
+                    // Çıkarma: ilk sayı ikinciden büyük olsun
+                    if (nums[i] < nums[i + 1]) {
+                        const temp = nums[i];
+                        nums[i] = nums[i + 1];
+                        nums[i + 1] = temp;
+                    }
                 }
             }
 
             result = this.calculateEquation(nums, eqOps);
             attempts++;
-        } while ((result < -50 || result > 99 || !Number.isInteger(result)) && attempts < 30);
+        } while ((result < 0 || result > 99 || !Number.isInteger(result)) && attempts < 50);
 
         // Sayıları kaydet
         for (let i = 0; i < numCount; i++) {
