@@ -580,9 +580,15 @@ class CrossMathGame {
             case '+': return a + b;
             case '-': return a - b;
             case '×': return a * b;
-            case '÷': return b !== 0 ? a / b : a;
+            case '÷': return b !== 0 ? Math.floor(a / b) : a; // Tam sayı bölme
             default: return a + b;
         }
+    }
+
+    // Bölme işlemi için tam bölünebilir sayılar üret
+    generateDivisibleNumber(divisor, maxNum) {
+        const multiplier = this.randInt(1, Math.floor(maxNum / divisor));
+        return multiplier * divisor;
     }
 
     renderPuzzle() {
@@ -626,7 +632,7 @@ class CrossMathGame {
                         break;
                     case 'result':
                         el.classList.add('cell-result');
-                        el.textContent = Number.isInteger(cell.value) ? cell.value : cell.value.toFixed(1);
+                        el.textContent = Math.round(cell.value); // Her zaman tam sayı
                         el.dataset.id = cell.pos;
                         break;
                     case 'void':
@@ -813,7 +819,13 @@ class CrossMathGame {
         let allCorrect = true;
         Object.keys(this.solution).forEach(id => {
             const cellEl = document.querySelector(`[data-id="${id}"]`);
-            if (this.userAnswers[id] === this.solution[id]) {
+            if (!cellEl) return;
+
+            // Sayıları tam sayı olarak karşılaştır
+            const userAnswer = parseInt(this.userAnswers[id]);
+            const correctAnswer = parseInt(this.solution[id]);
+
+            if (userAnswer === correctAnswer) {
                 cellEl.classList.add('correct');
             } else {
                 cellEl.classList.add('wrong');
