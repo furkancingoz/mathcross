@@ -257,8 +257,9 @@ class CrossMathGame {
         const levelFactor = (this.currentLevel - 1) / (this.maxLevels - 1);
         const modeIndex = ['easy', 'medium', 'hard', 'extreme', 'kubo'].indexOf(this.currentMode);
 
-        // Boşluk oranı
-        const blankRatio = 0.25 + modeIndex * 0.1 + levelFactor * 0.15;
+        // Boşluk oranı - Easy'de bile en az %40 boşluk
+        const baseRatio = 0.4 + modeIndex * 0.1;
+        const blankRatio = baseRatio + levelFactor * 0.2;
 
         // Easy/Medium: basit kare grid
         // Hard+: düzensiz crossword şekilleri
@@ -273,146 +274,126 @@ class CrossMathGame {
         }
     }
 
-    // Düzensiz crossword şekilleri
+    // Düzensiz crossword şekilleri - Basit A op B = C formatında
     getIrregularTemplates(modeIndex, levelFactor) {
         // N=sayı, o=operatör, ==eşittir, .=boş(void)
+        // Her denklem: N o N = N (2 sayı, 1 operatör, 1 sonuç)
         const templates = {
-            // Hard mode templates (orta boy)
+            // Hard mode templates (6-8 denklem)
             hard: [
-                // L şekli genişletilmiş
-                `N o N o N = N . . . .
-                 o . . . . . . . . . .
-                 N . . . . . . . . . .
-                 o . . . . . . . . . .
-                 N o N = N . . . . . .
-                 o . . . . . . . . . .
-                 N o N o N = N . . . .
-                 = . = . . . . . . . .
-                 N . N . . . . . . . .`,
+                // Çapraz kesişim
+                `N o N = N . .
+                 o . . . . . .
+                 N o N = N . .
+                 = . = . . . .
+                 N . N . . . .`,
 
-                // T şekli büyük
-                `N o N o N o N = N . .
-                 . . . . o . . . . . .
-                 . . . . N o N = N . .
-                 . . . . o . . . . . .
-                 . . . . N . . . . . .
-                 . . . . = . . . . . .
-                 . . . . N . . . . . .`,
+                // T şekli
+                `N o N = N . .
+                 . . o . . . .
+                 . . N o N = N
+                 . . = . . . .
+                 . . N . . . .`,
 
-                // Çapraz büyük
-                `N o N = N . . . . . . .
-                 o . . . . . . . . . . .
-                 N . N o N o N = N . . .
-                 = . o . . . . . . . . .
-                 N . N . N o N = N . . .
-                 . . = . o . . . . . . .
-                 . . N . N . . . . . . .
-                 . . . . = . . . . . . .
-                 . . . . N . . . . . . .`
+                // L şekli
+                `N o N = N
+                 o . . . .
+                 N . . . .
+                 o . . . .
+                 N o N = N
+                 = . . . .
+                 N . . . .`,
+
+                // Grid 2x2 kesişim
+                `N o N = N
+                 o . o . .
+                 N o N = N
+                 = . = . .
+                 N . N . .`
             ],
 
-            // Extreme mode templates (büyük, yoğun)
+            // Extreme mode templates (8-12 denklem)
             extreme: [
-                // Mega L şekli
-                `N o N o N = N . . . . . .
-                 o . . . . . . . . . . . .
-                 N . . . . . . . . . . . .
-                 o . . . . . . . . . . . .
-                 N . N o N = N . . . . . .
-                 o . o . . . . . . . . . .
-                 N o N o N o N = N . . . .
-                 = . = . o . . . . . . . .
-                 N . N . N o N = N . . . .
-                 . . . . = . = . . . . . .
-                 . . . . N . N . . . . . .`,
+                // Büyük çapraz
+                `N o N = N . . . . .
+                 o . . . . . . . . .
+                 N o N = N . . . . .
+                 = . o . . . . . . .
+                 N . N o N = N . . .
+                 . . = . . . . . . .
+                 . . N . . . . . . .`,
 
-                // H şekli büyük
-                `N . . . . . N . . . . . .
-                 o . . . . . o . . . . . .
-                 N . . . . . N . . . . . .
-                 o . . . . . o . . . . . .
-                 N o N o N o N o N = N . .
-                 o . . . . . o . . . . . .
-                 N . . . . . N . . . . . .
-                 o . . . . . o . . . . . .
-                 N . . . . . N . . . . . .
-                 = . . . . . = . . . . . .
-                 N . . . . . N . . . . . .`,
+                // 3x2 grid
+                `N o N = N . N o N = N
+                 o . . . . . o . . . .
+                 N o N = N . N o N = N
+                 = . = . . . = . = . .
+                 N . N . . . N . N . .`,
 
-                // Merdiven büyük
-                `N o N = N . . . . . . . . . .
-                 o . . . . . . . . . . . . . .
-                 N . N o N = N . . . . . . . .
-                 = . o . . . . . . . . . . . .
-                 N . N . N o N = N . . . . . .
-                 . . = . o . . . . . . . . . .
-                 . . N . N . N o N = N . . . .
-                 . . . . = . o . . . . . . . .
-                 . . . . N . N . N o N = N . .
-                 . . . . . . = . o . . . . . .
-                 . . . . . . N . N . . . . . .
-                 . . . . . . . . = . . . . . .
-                 . . . . . . . . N . . . . . .`,
+                // Merdiven
+                `N o N = N . . . .
+                 o . . . . . . . .
+                 N . N o N = N . .
+                 = . o . . . . . .
+                 N . N . N o N = N
+                 . . = . o . . . .
+                 . . N . N . . . .
+                 . . . . = . . . .
+                 . . . . N . . . .`,
+
+                // H şekli
+                `N . . . N . .
+                 o . . . o . .
+                 N o N = N . .
+                 o . o . o . .
+                 N . N o N = N
+                 = . = . = . .
+                 N . N . N . .`
+            ],
+
+            // Kubo mode templates (12-16 denklem)
+            kubo: [
+                // 3x3 grid
+                `N o N = N . N o N = N
+                 o . . . . . o . . . .
+                 N o N = N . N o N = N
+                 = . = . . . = . = . .
+                 N . N . . . N . N . .
+                 . . . . . . . . . . .
+                 N o N = N . N o N = N
+                 o . . . . . o . . . .
+                 N o N = N . N o N = N
+                 = . = . . . = . = . .
+                 N . N . . . N . N . .`,
+
+                // Yoğun kesişim
+                `N o N = N . . . .
+                 o . o . . . . . .
+                 N o N = N . . . .
+                 = . = . o . . . .
+                 N . N o N = N . .
+                 . . o . = . . . .
+                 . . N o N = N . .
+                 . . = . o . . . .
+                 . . N . N . . . .
+                 . . . . = . . . .
+                 . . . . N . . . .`,
 
                 // Çift kol
                 `N o N = N . . . N o N = N
                  o . . . . . . . o . . . .
                  N . . . . . . . N . . . .
                  o . . . . . . . o . . . .
-                 N o N o N o N o N = N . .
-                 = . o . . . o . = . . . .
-                 N . N . . . N . N . . . .
-                 . . = . . . = . . . . . .
-                 . . N . . . N . . . . . .`
-            ],
+                 N o N = N . . . N o N = N
+                 = . . . . . . . = . . . .
+                 N . . . . . . . N . . . .`,
 
-            // Kubo mode templates (maksimum zorluk)
-            kubo: [
-                // Mega çapraz yoğun
-                `N o N o N = N . . . N o N = N
-                 o . o . . . . . . . o . . . .
-                 N o N = N . . . . . N . . . .
-                 o . . . . . . . . . o . . . .
-                 N . N o N o N o N o N = N . .
-                 = . o . o . . . o . = . . . .
-                 N . N o N = N . N . N . . . .
-                 . . = . = . . . = . . . . . .
-                 . . N . N . . . N . . . . . .`,
-
-                // Süper grid 4x4
-                `N o N o N o N = N . . . .
-                 o . o . o . o . . . . . .
-                 N o N o N o N = N . . . .
-                 o . o . o . o . . . . . .
-                 N o N o N o N = N . . . .
-                 o . o . o . o . . . . . .
-                 N o N o N o N = N . . . .
-                 = . = . = . = . . . . . .
-                 N . N . N . N . . . . . .`,
-
-                // Ultra kompleks
-                `N o N = N . . . . . . . . . .
-                 o . . . . . . . . . . . . . .
-                 N . N o N o N = N . . . . . .
-                 o . o . . . o . . . . . . . .
-                 N o N = N . N . N o N = N . .
-                 = . o . . . = . o . . . . . .
-                 N . N o N o N o N = N . . . .
-                 . . = . o . = . o . . . . . .
-                 . . N . N o N . N . . . . . .
-                 . . . . = . . . = . . . . . .
-                 . . . . N . . . N . . . . . .`,
-
-                // Labirent
-                `N o N o N o N = N . N o N = N
-                 o . . . o . . . . . o . . . .
-                 N . . . N o N = N . N . . . .
-                 o . . . o . o . . . o . . . .
-                 N o N o N o N o N o N = N . .
-                 o . o . = . o . o . = . . . .
-                 N o N . N . N o N . N . . . .
-                 = . = . . . = . = . . . . . .
-                 N . N . . . N . N . . . . . .`
+                // Mega grid
+                `N o N = N . N o N = N . N o N = N
+                 o . . . . . o . . . . . o . . . .
+                 N o N = N . N o N = N . N o N = N
+                 = . = . . . = . = . . . = . = . .
+                 N . N . . . N . N . . . N . N . .`
             ]
         };
 
