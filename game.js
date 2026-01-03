@@ -277,98 +277,142 @@ class CrossMathGame {
     getIrregularTemplates(modeIndex, levelFactor) {
         // N=sayı, o=operatör, ==eşittir, .=boş(void)
         const templates = {
-            // Hard mode templates
+            // Hard mode templates (orta boy)
             hard: [
-                // L şekli
-                `N o N = N . .
-                 o . . . . . .
-                 N . . . . . .
-                 o . . . . . .
-                 N o N = N . .
-                 = . . . . . .
-                 N . . . . . .`,
-
-                // T şekli
-                `N o N o N = N
-                 . . o . . . .
-                 . . N o N = N
-                 . . = . . . .
-                 . . N . . . .`,
-
-                // Çapraz bağlantı
-                `N o N = N . . . .
-                 o . . . . . . . .
-                 N . N o N = N . .
-                 = . o . . . . . .
-                 N . N . . . . . .
-                 . . = . . . . . .
-                 . . N . . . . . .`
-            ],
-
-            // Extreme mode templates
-            extreme: [
-                // Büyük L
-                `N o N = N . . . .
-                 o . . . . . . . .
-                 N . . . . . . . .
-                 o . . . . . . . .
-                 N o N o N = N . .
-                 = . o . . . . . .
-                 N . N . . . . . .
-                 . . = . . . . . .
-                 . . N . . . . . .`,
-
-                // H şekli
-                `N . . . N . .
-                 o . . . o . .
-                 N o N o N = N
-                 o . . . o . .
-                 N . . . N . .
-                 = . . . = . .
-                 N . . . N . .`,
-
-                // Merdiven
-                `N o N = N . . . . . .
+                // L şekli genişletilmiş
+                `N o N o N = N . . . .
                  o . . . . . . . . . .
-                 N . N o N = N . . . .
-                 = . o . . . . . . . .
-                 N . N . N o N = N . .
-                 . . = . o . . . . . .
-                 . . N . N . . . . . .
+                 N . . . . . . . . . .
+                 o . . . . . . . . . .
+                 N o N = N . . . . . .
+                 o . . . . . . . . . .
+                 N o N o N = N . . . .
+                 = . = . . . . . . . .
+                 N . N . . . . . . . .`,
+
+                // T şekli büyük
+                `N o N o N o N = N . .
+                 . . . . o . . . . . .
+                 . . . . N o N = N . .
+                 . . . . o . . . . . .
+                 . . . . N . . . . . .
                  . . . . = . . . . . .
-                 . . . . N . . . . . .`
+                 . . . . N . . . . . .`,
+
+                // Çapraz büyük
+                `N o N = N . . . . . . .
+                 o . . . . . . . . . . .
+                 N . N o N o N = N . . .
+                 = . o . . . . . . . . .
+                 N . N . N o N = N . . .
+                 . . = . o . . . . . . .
+                 . . N . N . . . . . . .
+                 . . . . = . . . . . . .
+                 . . . . N . . . . . . .`
             ],
 
-            // Kubo mode templates
+            // Extreme mode templates (büyük, yoğun)
+            extreme: [
+                // Mega L şekli
+                `N o N o N = N . . . . . .
+                 o . . . . . . . . . . . .
+                 N . . . . . . . . . . . .
+                 o . . . . . . . . . . . .
+                 N . N o N = N . . . . . .
+                 o . o . . . . . . . . . .
+                 N o N o N o N = N . . . .
+                 = . = . o . . . . . . . .
+                 N . N . N o N = N . . . .
+                 . . . . = . = . . . . . .
+                 . . . . N . N . . . . . .`,
+
+                // H şekli büyük
+                `N . . . . . N . . . . . .
+                 o . . . . . o . . . . . .
+                 N . . . . . N . . . . . .
+                 o . . . . . o . . . . . .
+                 N o N o N o N o N = N . .
+                 o . . . . . o . . . . . .
+                 N . . . . . N . . . . . .
+                 o . . . . . o . . . . . .
+                 N . . . . . N . . . . . .
+                 = . . . . . = . . . . . .
+                 N . . . . . N . . . . . .`,
+
+                // Merdiven büyük
+                `N o N = N . . . . . . . . . .
+                 o . . . . . . . . . . . . . .
+                 N . N o N = N . . . . . . . .
+                 = . o . . . . . . . . . . . .
+                 N . N . N o N = N . . . . . .
+                 . . = . o . . . . . . . . . .
+                 . . N . N . N o N = N . . . .
+                 . . . . = . o . . . . . . . .
+                 . . . . N . N . N o N = N . .
+                 . . . . . . = . o . . . . . .
+                 . . . . . . N . N . . . . . .
+                 . . . . . . . . = . . . . . .
+                 . . . . . . . . N . . . . . .`,
+
+                // Çift kol
+                `N o N = N . . . N o N = N
+                 o . . . . . . . o . . . .
+                 N . . . . . . . N . . . .
+                 o . . . . . . . o . . . .
+                 N o N o N o N o N = N . .
+                 = . o . . . o . = . . . .
+                 N . N . . . N . N . . . .
+                 . . = . . . = . . . . . .
+                 . . N . . . N . . . . . .`
+            ],
+
+            // Kubo mode templates (maksimum zorluk)
             kubo: [
-                // Büyük çapraz
-                `N o N = N . N o N = N
-                 o . . . . . o . . . .
-                 N . . . . . N . . . .
-                 o . . . . . = . . . .
-                 N o N o N o N = N . .
-                 = . o . . . . . . . .
-                 N . N . . . . . . . .
-                 . . = . . . . . . . .
-                 . . N . . . . . . . .`,
+                // Mega çapraz yoğun
+                `N o N o N = N . . . N o N = N
+                 o . o . . . . . . . o . . . .
+                 N o N = N . . . . . N . . . .
+                 o . . . . . . . . . o . . . .
+                 N . N o N o N o N o N = N . .
+                 = . o . o . . . o . = . . . .
+                 N . N o N = N . N . N . . . .
+                 . . = . = . . . = . . . . . .
+                 . . N . N . . . N . . . . . .`,
 
-                // Mega grid
-                `N o N o N = N . .
-                 o . o . o . . . .
-                 N o N o N = N . .
-                 o . o . o . . . .
-                 N o N o N = N . .
-                 = . = . = . . . .
-                 N . N . N . . . .`,
+                // Süper grid 4x4
+                `N o N o N o N = N . . . .
+                 o . o . o . o . . . . . .
+                 N o N o N o N = N . . . .
+                 o . o . o . o . . . . . .
+                 N o N o N o N = N . . . .
+                 o . o . o . o . . . . . .
+                 N o N o N o N = N . . . .
+                 = . = . = . = . . . . . .
+                 N . N . N . N . . . . . .`,
 
-                // Kompleks bağlantı
-                `N o N = N . . . . . .
-                 o . . . . . . . . . .
-                 N . N o N o N = N . .
-                 o . o . . . o . . . .
-                 N o N = N . N . . . .
-                 = . = . . . = . . . .
-                 N . N . . . N . . . .`
+                // Ultra kompleks
+                `N o N = N . . . . . . . . . .
+                 o . . . . . . . . . . . . . .
+                 N . N o N o N = N . . . . . .
+                 o . o . . . o . . . . . . . .
+                 N o N = N . N . N o N = N . .
+                 = . o . . . = . o . . . . . .
+                 N . N o N o N o N = N . . . .
+                 . . = . o . = . o . . . . . .
+                 . . N . N o N . N . . . . . .
+                 . . . . = . . . = . . . . . .
+                 . . . . N . . . N . . . . . .`,
+
+                // Labirent
+                `N o N o N o N = N . N o N = N
+                 o . . . o . . . . . o . . . .
+                 N . . . N o N = N . N . . . .
+                 o . . . o . o . . . o . . . .
+                 N o N o N o N o N o N = N . .
+                 o . o . = . o . o . = . . . .
+                 N o N . N . N o N . N . . . .
+                 = . = . . . = . = . . . . . .
+                 N . N . . . N . N . . . . . .`
             ]
         };
 
