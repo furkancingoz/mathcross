@@ -251,359 +251,189 @@ class CrossMathGame {
 
         // Mode'a göre başlangıç boşluk oranı
         const modeBaseRatio = {
-            easy: 0.20,      // Easy: %20-%60
-            medium: 0.35,    // Medium: %35-%75
-            hard: 0.50,      // Hard: %50-%90
-            extreme: 0.65    // Extreme: %65-%95
+            easy: 0.25,
+            medium: 0.40,
+            hard: 0.55,
+            extreme: 0.70
         };
 
         const baseRatio = modeBaseRatio[this.currentMode] || 0.25;
-        const maxIncrease = 0.95 - baseRatio; // Max %95'e kadar
+        const maxIncrease = 0.90 - baseRatio;
         const blankRatio = baseRatio + levelFactor * maxIncrease;
 
-        // Zorluk ve level'a göre template seç
-        const allTemplates = this.getCrosswordTemplates();
-
-        // Difficulty ve level'a göre hangi template'ler kullanılabilir
-        let availableTemplates;
+        // Grid boyutu seç (zorluk ve level'a göre)
         const modeIndex = ['easy', 'medium', 'hard', 'extreme'].indexOf(this.currentMode);
-        const complexity = modeIndex + Math.floor(this.currentLevel / 5);
+        const complexity = modeIndex + Math.floor(this.currentLevel / 8);
 
+        let gridSize;
         if (complexity <= 1) {
-            availableTemplates = allTemplates.slice(0, 4); // Küçük template'ler
-        } else if (complexity <= 3) {
-            availableTemplates = allTemplates.slice(2, 7); // Orta template'ler
+            gridSize = 2; // 2x2 grid
+        } else if (complexity <= 2) {
+            gridSize = 3; // 3x3 grid
         } else {
-            availableTemplates = allTemplates.slice(4); // Büyük template'ler
+            gridSize = 4; // 4x4 grid
         }
 
-        const template = availableTemplates[Math.floor(Math.random() * availableTemplates.length)];
-        this.buildPuzzleFromTemplate(template, config, blankRatio);
+        this.buildMathGrid(gridSize, config, blankRatio);
     }
 
-    getCrosswordTemplates() {
-        // Each template is a 2D array where:
-        // 'N' = number cell
-        // '+', '-', '×', '÷' = operator (will be randomized based on mode)
-        // '=' = equals sign
-        // '.' = empty/void cell
-        // Numbers indicate shared cells (same number = same value)
-
-        return [
-            // Template 1: Classic cross
-            {
-                layout: [
-                    ['N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['o', '.', 'o', '.', 'o', '.', '.'],
-                    ['N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['o', '.', 'o', '.', 'o', '.', '.'],
-                    ['N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['=', '.', '=', '.', '=', '.', '.'],
-                    ['N', '.', 'N', '.', 'N', '.', '.'],
-                ],
-                equations: [
-                    { type: 'h', cells: [[0,0], [0,2], [0,4]], result: [0,6] },
-                    { type: 'h', cells: [[2,0], [2,2], [2,4]], result: [2,6] },
-                    { type: 'h', cells: [[4,0], [4,2], [4,4]], result: [4,6] },
-                    { type: 'v', cells: [[0,0], [2,0], [4,0]], result: [6,0] },
-                    { type: 'v', cells: [[0,2], [2,2], [4,2]], result: [6,2] },
-                    { type: 'v', cells: [[0,4], [2,4], [4,4]], result: [6,4] },
-                ]
-            },
-            // Template 2: L-shape
-            {
-                layout: [
-                    ['N', 'o', 'N', '=', 'N', '.', '.'],
-                    ['o', '.', '.', '.', '.', '.', '.'],
-                    ['N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['=', '.', 'o', '.', '.', '.', '.'],
-                    ['N', '.', 'N', 'o', 'N', '=', 'N'],
-                    ['.', '.', '=', '.', '.', '.', '.'],
-                    ['.', '.', 'N', '.', '.', '.', '.'],
-                ],
-                equations: [
-                    { type: 'h', cells: [[0,0], [0,2]], result: [0,4] },
-                    { type: 'h', cells: [[2,0], [2,2], [2,4]], result: [2,6] },
-                    { type: 'h', cells: [[4,2], [4,4]], result: [4,6] },
-                    { type: 'v', cells: [[0,0], [2,0]], result: [4,0] },
-                    { type: 'v', cells: [[2,2], [4,2]], result: [6,2] },
-                ]
-            },
-            // Template 3: Plus shape
-            {
-                layout: [
-                    ['.', '.', 'N', '.', '.'],
-                    ['.', '.', 'o', '.', '.'],
-                    ['N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['.', '.', 'o', '.', '.'],
-                    ['.', '.', 'N', '.', '.'],
-                    ['.', '.', '=', '.', '.'],
-                    ['.', '.', 'N', '.', '.'],
-                ],
-                equations: [
-                    { type: 'h', cells: [[2,0], [2,2], [2,4]], result: [2,6] },
-                    { type: 'v', cells: [[0,2], [2,2], [4,2]], result: [6,2] },
-                ]
-            },
-            // Template 4: T-shape
-            {
-                layout: [
-                    ['N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['.', '.', 'o', '.', '.', '.', '.'],
-                    ['.', '.', 'N', '.', '.', '.', '.'],
-                    ['.', '.', 'o', '.', '.', '.', '.'],
-                    ['.', '.', 'N', '.', '.', '.', '.'],
-                    ['.', '.', '=', '.', '.', '.', '.'],
-                    ['.', '.', 'N', '.', '.', '.', '.'],
-                ],
-                equations: [
-                    { type: 'h', cells: [[0,0], [0,2], [0,4]], result: [0,6] },
-                    { type: 'v', cells: [[0,2], [2,2], [4,2]], result: [6,2] },
-                ]
-            },
-            // Template 5: Complex interconnected
-            {
-                layout: [
-                    ['N', 'o', 'N', '=', 'N', '.', 'N', 'o', 'N', '=', 'N'],
-                    ['o', '.', '.', '.', '.', '.', 'o', '.', '.', '.', '.'],
-                    ['N', '.', '.', '.', '.', '.', 'N', '.', '.', '.', '.'],
-                    ['o', '.', '.', '.', '.', '.', '=', '.', '.', '.', '.'],
-                    ['N', 'o', 'N', 'o', 'N', '=', 'N', '.', '.', '.', '.'],
-                    ['=', '.', 'o', '.', '.', '.', '.', '.', '.', '.', '.'],
-                    ['N', '.', 'N', '.', '.', '.', '.', '.', '.', '.', '.'],
-                    ['.', '.', '=', '.', '.', '.', '.', '.', '.', '.', '.'],
-                    ['.', '.', 'N', '.', '.', '.', '.', '.', '.', '.', '.'],
-                ],
-                equations: [
-                    { type: 'h', cells: [[0,0], [0,2]], result: [0,4] },
-                    { type: 'h', cells: [[0,6], [0,8]], result: [0,10] },
-                    { type: 'h', cells: [[4,0], [4,2], [4,4]], result: [4,6] },
-                    { type: 'v', cells: [[0,0], [2,0], [4,0]], result: [6,0] },
-                    { type: 'v', cells: [[0,6], [2,6]], result: [4,6] },
-                    { type: 'v', cells: [[4,2], [6,2]], result: [8,2] },
-                ]
-            },
-            // Template 6: Grid 2x2
-            {
-                layout: [
-                    ['N', 'o', 'N', '=', 'N'],
-                    ['o', '.', 'o', '.', '.'],
-                    ['N', 'o', 'N', '=', 'N'],
-                    ['=', '.', '=', '.', '.'],
-                    ['N', '.', 'N', '.', '.'],
-                ],
-                equations: [
-                    { type: 'h', cells: [[0,0], [0,2]], result: [0,4] },
-                    { type: 'h', cells: [[2,0], [2,2]], result: [2,4] },
-                    { type: 'v', cells: [[0,0], [2,0]], result: [4,0] },
-                    { type: 'v', cells: [[0,2], [2,2]], result: [4,2] },
-                ]
-            },
-            // Template 7: Staircase
-            {
-                layout: [
-                    ['N', 'o', 'N', '=', 'N', '.', '.', '.', '.'],
-                    ['o', '.', '.', '.', '.', '.', '.', '.', '.'],
-                    ['N', 'o', 'N', 'o', 'N', '=', 'N', '.', '.'],
-                    ['=', '.', 'o', '.', '.', '.', '.', '.', '.'],
-                    ['N', '.', 'N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['.', '.', '=', '.', 'o', '.', '.', '.', '.'],
-                    ['.', '.', 'N', '.', 'N', '.', '.', '.', '.'],
-                    ['.', '.', '.', '.', '=', '.', '.', '.', '.'],
-                    ['.', '.', '.', '.', 'N', '.', '.', '.', '.'],
-                ],
-                equations: [
-                    { type: 'h', cells: [[0,0], [0,2]], result: [0,4] },
-                    { type: 'h', cells: [[2,0], [2,2], [2,4]], result: [2,6] },
-                    { type: 'h', cells: [[4,2], [4,4], [4,6]], result: [4,8] },
-                    { type: 'v', cells: [[0,0], [2,0]], result: [4,0] },
-                    { type: 'v', cells: [[2,2], [4,2]], result: [6,2] },
-                    { type: 'v', cells: [[4,4], [6,4]], result: [8,4] },
-                ]
-            },
-            // Template 8: Big Grid 4x4
-            {
-                layout: [
-                    ['N', 'o', 'N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['o', '.', 'o', '.', 'o', '.', 'o', '.', '.'],
-                    ['N', 'o', 'N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['o', '.', 'o', '.', 'o', '.', 'o', '.', '.'],
-                    ['N', 'o', 'N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['o', '.', 'o', '.', 'o', '.', 'o', '.', '.'],
-                    ['N', 'o', 'N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['=', '.', '=', '.', '=', '.', '=', '.', '.'],
-                    ['N', '.', 'N', '.', 'N', '.', 'N', '.', '.'],
-                ],
-                equations: [
-                    { type: 'h', cells: [[0,0], [0,2], [0,4], [0,6]], result: [0,8] },
-                    { type: 'h', cells: [[2,0], [2,2], [2,4], [2,6]], result: [2,8] },
-                    { type: 'h', cells: [[4,0], [4,2], [4,4], [4,6]], result: [4,8] },
-                    { type: 'h', cells: [[6,0], [6,2], [6,4], [6,6]], result: [6,8] },
-                    { type: 'v', cells: [[0,0], [2,0], [4,0], [6,0]], result: [8,0] },
-                    { type: 'v', cells: [[0,2], [2,2], [4,2], [6,2]], result: [8,2] },
-                    { type: 'v', cells: [[0,4], [2,4], [4,4], [6,4]], result: [8,4] },
-                    { type: 'v', cells: [[0,6], [2,6], [4,6], [6,6]], result: [8,6] },
-                ]
-            },
-            // Template 9: Diamond
-            {
-                layout: [
-                    ['.', '.', '.', '.', 'N', '.', '.', '.', '.'],
-                    ['.', '.', '.', '.', 'o', '.', '.', '.', '.'],
-                    ['.', '.', 'N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['.', '.', 'o', '.', 'o', '.', '.', '.', '.'],
-                    ['N', 'o', 'N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['.', '.', 'o', '.', 'o', '.', '.', '.', '.'],
-                    ['.', '.', 'N', 'o', 'N', 'o', 'N', '=', 'N'],
-                    ['.', '.', '=', '.', 'o', '.', '.', '.', '.'],
-                    ['.', '.', 'N', '.', 'N', '.', '.', '.', '.'],
-                    ['.', '.', '.', '.', '=', '.', '.', '.', '.'],
-                    ['.', '.', '.', '.', 'N', '.', '.', '.', '.'],
-                ],
-                equations: [
-                    { type: 'h', cells: [[2,2], [2,4], [2,6]], result: [2,8] },
-                    { type: 'h', cells: [[4,0], [4,2], [4,4], [4,6]], result: [4,8] },
-                    { type: 'h', cells: [[6,2], [6,4], [6,6]], result: [6,8] },
-                    { type: 'v', cells: [[2,2], [4,2], [6,2]], result: [8,2] },
-                    { type: 'v', cells: [[0,4], [2,4], [4,4], [6,4]], result: [10,4] },
-                ]
-            },
-            // Template 10: Mega Cross
-            {
-                layout: [
-                    ['N', 'o', 'N', 'o', 'N', '=', 'N', '.', 'N', 'o', 'N', '=', 'N'],
-                    ['o', '.', 'o', '.', 'o', '.', '.', '.', 'o', '.', '.', '.', '.'],
-                    ['N', 'o', 'N', 'o', 'N', '=', 'N', '.', 'N', '.', '.', '.', '.'],
-                    ['o', '.', 'o', '.', '.', '.', '.', '.', 'o', '.', '.', '.', '.'],
-                    ['N', 'o', 'N', 'o', 'N', 'o', 'N', 'o', 'N', '=', 'N', '.', '.'],
-                    ['=', '.', '=', '.', '.', '.', '.', '.', '=', '.', '.', '.', '.'],
-                    ['N', '.', 'N', '.', '.', '.', '.', '.', 'N', '.', '.', '.', '.'],
-                ],
-                equations: [
-                    { type: 'h', cells: [[0,0], [0,2], [0,4]], result: [0,6] },
-                    { type: 'h', cells: [[0,8], [0,10]], result: [0,12] },
-                    { type: 'h', cells: [[2,0], [2,2], [2,4]], result: [2,6] },
-                    { type: 'h', cells: [[4,0], [4,2], [4,4], [4,6], [4,8]], result: [4,10] },
-                    { type: 'v', cells: [[0,0], [2,0], [4,0]], result: [6,0] },
-                    { type: 'v', cells: [[0,2], [2,2], [4,2]], result: [6,2] },
-                    { type: 'v', cells: [[0,8], [2,8], [4,8]], result: [6,8] },
-                ]
-            },
-        ];
-    }
-
-    buildPuzzleFromTemplate(template, config, blankRatio) {
+    // Matematiksel olarak doğru grid oluştur
+    buildMathGrid(size, config, blankRatio) {
         this.solution = {};
         this.equations = [];
 
-        const layout = template.layout;
-        this.gridRows = layout.length;
-        this.gridCols = layout[0].length;
+        // Grid boyutları: her hücre için sayı + operatör + sonuç
+        this.gridRows = size * 2 + 1;
+        this.gridCols = size * 2 + 1;
 
-        // Initialize grid
+        // Grid'i başlat
         this.grid = [];
         for (let r = 0; r < this.gridRows; r++) {
             this.grid[r] = [];
             for (let c = 0; c < this.gridCols; c++) {
-                const cell = layout[r][c];
-                if (cell === '.') {
-                    this.grid[r][c] = { type: 'void' };
-                } else if (cell === 'N') {
-                    this.grid[r][c] = { type: 'number', value: null, pos: `${r}-${c}` };
-                } else if (cell === 'o') {
-                    this.grid[r][c] = { type: 'operator', value: null };
-                } else if (cell === '=') {
-                    this.grid[r][c] = { type: 'equals', value: '=' };
-                }
+                this.grid[r][c] = { type: 'void' };
             }
         }
 
-        // Generate numbers for each equation
         const ops = config.ops;
         const maxNum = config.maxNum;
 
-        template.equations.forEach((eq, idx) => {
-            const numCount = eq.cells.length;
-            const eqOps = [];
-
-            // Pick operators
-            for (let i = 0; i < numCount - 1; i++) {
-                eqOps.push(this.pickOp(ops));
-            }
-
-            // Generate numbers that produce valid results
-            let nums = [];
-            let result;
-            let attempts = 0;
-
-            do {
-                nums = [];
-                for (let i = 0; i < numCount; i++) {
-                    const [r, c] = eq.cells[i];
-                    // Check if this cell already has a value (shared cell)
-                    if (this.grid[r][c].value !== null) {
-                        nums.push(this.grid[r][c].value);
-                    } else {
-                        nums.push(this.randInt(1, maxNum));
-                    }
-                }
-
-                // Calculate result
-                result = this.calculateEquation(nums, eqOps);
-                attempts++;
-            } while ((result < -99 || result > 99 || !Number.isInteger(result)) && attempts < 50);
-
-            // Place numbers
-            eq.cells.forEach(([r, c], i) => {
-                this.grid[r][c].value = nums[i];
-            });
-
-            // Place result
-            const [rr, rc] = eq.result;
-            this.grid[rr][rc] = { type: 'result', value: result, pos: `${rr}-${rc}` };
-
-            // Place operators between cells
-            for (let i = 0; i < numCount - 1; i++) {
-                const [r1, c1] = eq.cells[i];
-                const [r2, c2] = eq.cells[i + 1];
-
-                // Find operator cell between
-                if (eq.type === 'h') {
-                    // Horizontal: operator is at (r1, c1+1)
-                    const opCol = c1 + 1;
-                    if (this.grid[r1][opCol] && this.grid[r1][opCol].type === 'operator') {
-                        this.grid[r1][opCol].value = eqOps[i];
-                    }
-                } else {
-                    // Vertical: operator is at (r1+1, c1)
-                    const opRow = r1 + 1;
-                    if (this.grid[opRow][c1] && this.grid[opRow][c1].type === 'operator') {
-                        this.grid[opRow][c1].value = eqOps[i];
-                    }
-                }
-            }
-
-            // Store equation for validation
-            this.equations.push({
-                type: eq.type,
-                cells: eq.cells.map(([r, c]) => `${r}-${c}`),
-                ops: eqOps,
-                result: result,
-                resultPos: `${eq.result[0]}-${eq.result[1]}`
-            });
-        });
-
-        // Determine blanks
-        const allNumPositions = [];
-        for (let r = 0; r < this.gridRows; r++) {
-            for (let c = 0; c < this.gridCols; c++) {
-                if (this.grid[r][c].type === 'number' && this.grid[r][c].value !== null) {
-                    allNumPositions.push(`${r}-${c}`);
-                }
+        // Sayı matrisini oluştur (size x size)
+        const numbers = [];
+        for (let i = 0; i < size; i++) {
+            numbers[i] = [];
+            for (let j = 0; j < size; j++) {
+                numbers[i][j] = this.randInt(1, Math.min(maxNum, 15));
             }
         }
 
-        const numBlanks = Math.max(2, Math.floor(allNumPositions.length * blankRatio));
+        // Yatay operatörler ve sonuçlar
+        const hOps = [];
+        const hResults = [];
+        for (let i = 0; i < size; i++) {
+            hOps[i] = [];
+            // Her satır için operatörler seç
+            for (let j = 0; j < size - 1; j++) {
+                hOps[i][j] = this.pickSafeOp(ops, numbers[i][j], numbers[i][j + 1]);
+            }
+            // Sonucu hesapla
+            hResults[i] = this.calculateRow(numbers[i], hOps[i]);
+        }
+
+        // Dikey operatörler ve sonuçlar
+        const vOps = [];
+        const vResults = [];
+        for (let j = 0; j < size; j++) {
+            vOps[j] = [];
+            const column = numbers.map(row => row[j]);
+            // Her sütun için operatörler seç
+            for (let i = 0; i < size - 1; i++) {
+                vOps[j][i] = this.pickSafeOp(ops, column[i], column[i + 1]);
+            }
+            // Sonucu hesapla
+            vResults[j] = this.calculateRow(column, vOps[j]);
+        }
+
+        // Grid'e yerleştir
+        for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size; j++) {
+                const r = i * 2;
+                const c = j * 2;
+                this.grid[r][c] = {
+                    type: 'number',
+                    value: numbers[i][j],
+                    pos: `${r}-${c}`
+                };
+            }
+        }
+
+        // Yatay operatörler
+        for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size - 1; j++) {
+                const r = i * 2;
+                const c = j * 2 + 1;
+                this.grid[r][c] = {
+                    type: 'operator',
+                    value: hOps[i][j]
+                };
+            }
+        }
+
+        // Yatay eşittir ve sonuçlar
+        for (let i = 0; i < size; i++) {
+            const r = i * 2;
+            const eqCol = (size - 1) * 2 + 1;
+            const resCol = size * 2;
+
+            this.grid[r][eqCol] = { type: 'equals', value: '=' };
+            this.grid[r][resCol] = {
+                type: 'result',
+                value: hResults[i],
+                pos: `${r}-${resCol}`
+            };
+
+            // Equation kaydet
+            const cells = [];
+            for (let j = 0; j < size; j++) {
+                cells.push(`${r}-${j * 2}`);
+            }
+            this.equations.push({
+                type: 'h',
+                cells: cells,
+                ops: hOps[i],
+                result: hResults[i],
+                resultPos: `${r}-${resCol}`
+            });
+        }
+
+        // Dikey operatörler
+        for (let j = 0; j < size; j++) {
+            for (let i = 0; i < size - 1; i++) {
+                const r = i * 2 + 1;
+                const c = j * 2;
+                this.grid[r][c] = {
+                    type: 'operator',
+                    value: vOps[j][i]
+                };
+            }
+        }
+
+        // Dikey eşittir ve sonuçlar
+        for (let j = 0; j < size; j++) {
+            const c = j * 2;
+            const eqRow = (size - 1) * 2 + 1;
+            const resRow = size * 2;
+
+            this.grid[eqRow][c] = { type: 'equals', value: '=' };
+            this.grid[resRow][c] = {
+                type: 'result',
+                value: vResults[j],
+                pos: `${resRow}-${c}`
+            };
+
+            // Equation kaydet
+            const cells = [];
+            for (let i = 0; i < size; i++) {
+                cells.push(`${i * 2}-${c}`);
+            }
+            this.equations.push({
+                type: 'v',
+                cells: cells,
+                ops: vOps[j],
+                result: vResults[j],
+                resultPos: `${resRow}-${c}`
+            });
+        }
+
+        // Boşluk pozisyonlarını belirle
+        const allNumPositions = [];
+        for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size; j++) {
+                allNumPositions.push(`${i * 2}-${j * 2}`);
+            }
+        }
+
+        const numBlanks = Math.max(1, Math.floor(allNumPositions.length * blankRatio));
         this.shuffle(allNumPositions);
         const blanks = allNumPositions.slice(0, numBlanks);
 
@@ -614,12 +444,30 @@ class CrossMathGame {
         });
     }
 
-    calculateEquation(nums, ops) {
+    // Güvenli operatör seç (bölme için tam bölünebilir olmalı)
+    pickSafeOp(ops, a, b) {
+        const safeOps = ops.filter(op => {
+            if (op === '÷') {
+                return b !== 0 && a % b === 0 && a / b <= 20;
+            }
+            return true;
+        });
+        return safeOps.length > 0
+            ? safeOps[Math.floor(Math.random() * safeOps.length)]
+            : '+';
+    }
+
+    // Satır/sütun hesapla
+    calculateRow(nums, ops) {
         let result = nums[0];
         for (let i = 0; i < ops.length; i++) {
             result = this.applyOp(result, ops[i], nums[i + 1]);
         }
         return result;
+    }
+
+    calculateEquation(nums, ops) {
+        return this.calculateRow(nums, ops);
     }
 
     pickOp(ops) {
