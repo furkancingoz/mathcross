@@ -339,6 +339,14 @@ body {
     text-align: right;
 }
 
+.game-id {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--text-muted);
+    opacity: 0.6;
+    margin-left: 8px;
+}
+
 /* Game Container */
 #game-container {
     flex: 1;
