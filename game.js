@@ -248,8 +248,18 @@ class CrossMathGame {
     generatePuzzle() {
         const config = this.modes[this.currentMode];
         const levelFactor = (this.currentLevel - 1) / (this.maxLevels - 1);
-        // Level 1: %25 boş, Level 25: %85 boş (çok zorlaşıyor)
-        const blankRatio = 0.25 + levelFactor * 0.60;
+
+        // Mode'a göre başlangıç boşluk oranı
+        const modeBaseRatio = {
+            easy: 0.20,      // Easy: %20-%60
+            medium: 0.35,    // Medium: %35-%75
+            hard: 0.50,      // Hard: %50-%90
+            extreme: 0.65    // Extreme: %65-%95
+        };
+
+        const baseRatio = modeBaseRatio[this.currentMode] || 0.25;
+        const maxIncrease = 0.95 - baseRatio; // Max %95'e kadar
+        const blankRatio = baseRatio + levelFactor * maxIncrease;
 
         // Zorluk ve level'a göre template seç
         const allTemplates = this.getCrosswordTemplates();
