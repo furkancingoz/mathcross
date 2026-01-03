@@ -85,13 +85,17 @@ body {
     z-index: 20;
 }
 
+/* Overlay ekranlar (pause, level complete, game over, wrong answer) */
 .overlay {
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     justify-content: center;
     align-items: center;
-    z-index: 100;
+}
+
+.overlay.active {
+    z-index: 100 !important;
 }
 
 /* ========== MENU ========== */
