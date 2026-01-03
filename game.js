@@ -256,17 +256,17 @@ class CrossMathGame {
         const config = this.modes[this.currentMode];
         const levelFactor = (this.currentLevel - 1) / (this.maxLevels - 1);
 
-        // Mode'a göre boşluk sayısı (9 hücreli 3x3 grid için)
+        // Mode'a göre boşluk sayısı (2x2 grid = 4 ana sayı, max 3 boşluk)
         const modeBlankCount = {
-            easy: [2, 4],      // 2-4 boşluk
-            medium: [3, 5],    // 3-5 boşluk
-            hard: [4, 6],      // 4-6 boşluk
-            extreme: [5, 7],   // 5-7 boşluk
-            kubo: [6, 8]       // 6-8 boşluk
+            easy: [1, 2],      // 1-2 boşluk
+            medium: [1, 2],    // 1-2 boşluk
+            hard: [2, 3],      // 2-3 boşluk
+            extreme: [2, 3],   // 2-3 boşluk
+            kubo: [3, 3]       // 3 boşluk (max)
         };
 
-        const [minBlanks, maxBlanks] = modeBlankCount[this.currentMode] || [2, 4];
-        const blankCount = Math.min(8, minBlanks + Math.floor(levelFactor * (maxBlanks - minBlanks + 1)));
+        const [minBlanks, maxBlanks] = modeBlankCount[this.currentMode] || [1, 2];
+        const blankCount = minBlanks + Math.floor(levelFactor * (maxBlanks - minBlanks + 1));
 
         this.buildSimpleGrid(config, blankCount);
     }
@@ -390,11 +390,12 @@ class CrossMathGame {
             { type: 'v', cells: ['0-2', '2-2'], ops: [vOps[1]], result: vResults[1], resultPos: '4-2' }
         ];
 
-        // Boşlukları belirle (sadece ana 4 sayıdan - sonuçlar sabit)
+        // Boşlukları belirle (en az 1 ipucu sayı kalmalı)
         const mainNumberPositions = ['0-0', '0-2', '2-0', '2-2'];
         this.shuffle(mainNumberPositions);
 
-        const actualBlanks = Math.min(blankCount, 4); // Max 4 boşluk (ana sayılar)
+        // Max 3 boşluk - her zaman en az 1 sayı görünsün
+        const actualBlanks = Math.min(blankCount, 3);
         const blanks = mainNumberPositions.slice(0, actualBlanks);
 
         blanks.forEach(pos => {
