@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cross Math - IQ Challenge</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="dark-mode">
+    <!-- Ana Menu -->
+    <div id="menu-screen" class="screen active">
+        <div class="menu-container">
+            <button id="theme-toggle" class="theme-btn" title="Toggle Theme">
+                <span class="theme-icon">🌙</span>
+            </button>
+
+            <h1 class="game-title">CROSS MATH</h1>
+            <p class="subtitle">IQ Challenge</p>
+
+            <div class="mode-selection">
+                <h2>Select Difficulty</h2>
+                <div class="mode-buttons">
+                    <button class="mode-btn" data-mode="easy">
+                        <div class="mode-icon">🟢</div>
+                        <div class="mode-info">
+                            <span class="mode-name">Easy</span>
+                            <span class="mode-desc">Addition & Subtraction</span>
+                        </div>
+                        <span class="mode-arrow">›</span>
+                    </button>
+                    <button class="mode-btn" data-mode="medium">
+                        <div class="mode-icon">🟡</div>
+                        <div class="mode-info">
+                            <span class="mode-name">Medium</span>
+                            <span class="mode-desc">+ Multiplication</span>
+                        </div>
+                        <span class="mode-arrow">›</span>
+                    </button>
+                    <button class="mode-btn" data-mode="hard">
+                        <div class="mode-icon">🟠</div>
+                        <div class="mode-info">
+                            <span class="mode-name">Hard</span>
+                            <span class="mode-desc">All Operations</span>
+                        </div>
+                        <span class="mode-arrow">›</span>
+                    </button>
+                    <button class="mode-btn" data-mode="extreme">
+                        <div class="mode-icon">🔴</div>
+                        <div class="mode-info">
+                            <span class="mode-name">Extreme</span>
+                            <span class="mode-desc">Maximum Challenge</span>
+                        </div>
+                        <span class="mode-arrow">›</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="high-scores">
+                <h3>🏆 Best Scores</h3>
+                <div id="scores-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Oyun Ekrani -->
+    <div id="game-screen" class="screen">
+        <div class="game-header">
+            <button id="back-btn" class="header-btn" title="Back to Menu">←</button>
+            <div class="header-info">
+                <div class="header-item">
+                    <span class="label">Level</span>
+                    <span id="current-level" class="value">1</span>
+                </div>
+                <div class="header-item timer-box">
+                    <span class="label">Time</span>
+                    <span id="timer" class="value">00:00</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="hint-btn" class="header-btn" title="Hint">
+                    💡 <span id="hints-left">3</span>
+                </button>
+                <button id="theme-toggle-game" class="header-btn theme-btn-small">🌙</button>
+            </div>
+        </div>
+
+        <div class="level-progress">
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <span id="progress-text" class="progress-text">Level 1/10</span>
+        </div>
+
+        <div id="game-container">
+            <div id="puzzle-grid"></div>
+        </div>
+
+        <div id="number-bank">
+            <div class="bank-label">Drag numbers to empty cells</div>
+            <div id="bank-numbers"></div>
+        </div>
+
+        <div class="game-footer">
+            <div class="iq-display">
+                <span class="iq-label">IQ Score</span>
+                <span id="current-iq" class="iq-value">100</span>
+            </div>
+            <button id="check-btn" class="check-button">✓ Check</button>
+        </div>
+    </div>
+
+    <!-- Level Complete -->
+    <div id="level-complete" class="screen overlay">
+        <div class="popup">
+            <div class="popup-icon">🎉</div>
+            <h2>Level Complete!</h2>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-value" id="complete-time">00:00</span>
+                    <span class="stat-label">Time</span>
+                </div>
+                <div class="stat highlight">
+                    <span class="stat-value" id="complete-iq">120</span>
+                    <span class="stat-label">IQ Score</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value" id="complete-hints">0</span>
+                    <span class="stat-label">Hints</span>
+                </div>
+            </div>
+            <div class="popup-buttons">
+                <button id="next-level-btn" class="btn-primary">Next Level →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over -->
+    <div id="game-over" class="screen overlay">
+        <div class="popup">
+            <div class="popup-icon">🧠</div>
+            <h2>Challenge Complete!</h2>
+            <div class="final-iq">
+                <span class="big-iq" id="final-iq">135</span>
+                <span class="iq-category" id="iq-category">Superior</span>
+            </div>
+            <div class="final-stats">
+                <p><span>Levels:</span> <strong id="total-levels">10</strong></p>
+                <p><span>Total Time:</span> <strong id="total-time">05:30</strong></p>
+                <p><span>Hints Used:</span> <strong id="total-hints">2</strong></p>
+            </div>
+            <div class="popup-buttons">
+                <button id="play-again-btn" class="btn-primary">Play Again</button>
+                <button id="menu-btn" class="btn-secondary">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pause Menu -->
+    <div id="pause-screen" class="screen overlay">
+        <div class="popup">
+            <div class="popup-icon">⏸️</div>
+            <h2>Paused</h2>
+            <div class="popup-buttons">
+                <button id="resume-btn" class="btn-primary">▶ Resume</button>
+                <button id="restart-btn" class="btn-secondary">↻ Restart Level</button>
+                <button id="quit-btn" class="btn-danger">✕ Quit to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wrong Answer -->
+    <div id="wrong-answer" class="screen overlay">
+        <div class="popup small">
+            <div class="popup-icon">❌</div>
+            <h2>Not Quite!</h2>
+            <p>Some equations don't add up correctly.</p>
+            <button id="try-again-btn" class="btn-primary">Try Again</button>
+        </div>
+    </div>
+
+    <!-- Dragging Element -->
+    <div id="drag-preview" class="drag-preview"></div>
+
+    <script src="game.js"></script>
+</body>
+</html>
