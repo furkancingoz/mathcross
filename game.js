@@ -4,11 +4,10 @@
 class CrossMathGame {
     constructor() {
         this.modes = {
-            easy: { ops: ['+', '-'], iqMultiplier: 0.8, maxNum: 12 },
-            medium: { ops: ['+', '-', '×'], iqMultiplier: 1.0, maxNum: 15 },
-            hard: { ops: ['+', '-', '×', '÷'], iqMultiplier: 1.3, maxNum: 20 },
-            extreme: { ops: ['+', '-', '×', '÷'], iqMultiplier: 1.6, maxNum: 30 },
-            kubo: { ops: ['+', '-', '×', '÷'], iqMultiplier: 2.0, maxNum: 50 }
+            easy: { ops: ['+', '-'], iqMultiplier: 0.8, maxNum: 10 },
+            medium: { ops: ['+', '-', '×'], iqMultiplier: 1.0, maxNum: 12 },
+            hard: { ops: ['+', '-', '×', '÷'], iqMultiplier: 1.3, maxNum: 15 },
+            extreme: { ops: ['+', '-', '×', '÷'], iqMultiplier: 1.6, maxNum: 20 }
         };
 
         this.maxLevels = 25;
@@ -255,19 +254,21 @@ class CrossMathGame {
 
         const config = this.modes[this.currentMode];
         const levelFactor = (this.currentLevel - 1) / (this.maxLevels - 1);
-        const modeIndex = ['easy', 'medium', 'hard', 'extreme', 'kubo'].indexOf(this.currentMode);
+        const modeIndex = ['easy', 'medium', 'hard', 'extreme'].indexOf(this.currentMode);
 
-        // Boşluk oranı - Easy'de bile en az %40 boşluk
-        const baseRatio = 0.4 + modeIndex * 0.1;
-        const blankRatio = baseRatio + levelFactor * 0.2;
+        // Boşluk oranı
+        const baseRatio = 0.35 + modeIndex * 0.08;
+        const blankRatio = Math.min(0.7, baseRatio + levelFactor * 0.15);
 
-        // Easy/Medium: basit kare grid
-        // Hard+: düzensiz crossword şekilleri
-        if (modeIndex <= 1) {
+        // Easy: 2x2 grid
+        // Medium: 2x2 -> 3x3 grid
+        // Hard/Extreme: template tabanlı düzensiz şekiller
+        if (modeIndex === 0) {
+            this.buildGrid(2, config, blankRatio);
+        } else if (modeIndex === 1) {
             const gridSize = levelFactor < 0.5 ? 2 : 3;
             this.buildGrid(gridSize, config, blankRatio);
         } else {
-            // Hard, Extreme, Kubo: template tabanlı düzensiz şekiller
             const templates = this.getIrregularTemplates(modeIndex, levelFactor);
             const template = templates[Math.floor(Math.random() * templates.length)];
             this.buildFromTemplate(template, config, blankRatio);
@@ -279,32 +280,32 @@ class CrossMathGame {
         // N=sayı, o=operatör, ==eşittir, .=boş(void)
         // Her denklem: N o N = N (2 sayı, 1 operatör, 1 sonuç)
         const templates = {
-            // Hard mode templates (6-8 denklem)
+            // Hard mode templates (4-6 denklem)
             hard: [
-                // Çapraz kesişim
-                `N o N = N . .
-                 o . . . . . .
-                 N o N = N . .
-                 = . = . . . .
-                 N . N . . . .`,
+                // Basit çapraz
+                `N o N = N
+                 o . . . .
+                 N o N = N
+                 = . = . .
+                 N . N . .`,
 
                 // T şekli
-                `N o N = N . .
-                 . . o . . . .
-                 . . N o N = N
-                 . . = . . . .
-                 . . N . . . .`,
+                `N o N = N
+                 . . o . .
+                 . . N . .
+                 . . o . .
+                 . . N . .
+                 . . = . .
+                 . . N . .`,
 
                 // L şekli
                 `N o N = N
-                 o . . . .
-                 N . . . .
                  o . . . .
                  N o N = N
                  = . . . .
                  N . . . .`,
 
-                // Grid 2x2 kesişim
+                // Küçük grid
                 `N o N = N
                  o . o . .
                  N o N = N
@@ -312,18 +313,9 @@ class CrossMathGame {
                  N . N . .`
             ],
 
-            // Extreme mode templates (8-12 denklem)
+            // Extreme mode templates (6-10 denklem)
             extreme: [
-                // Büyük çapraz
-                `N o N = N . . . . .
-                 o . . . . . . . . .
-                 N o N = N . . . . .
-                 = . o . . . . . . .
-                 N . N o N = N . . .
-                 . . = . . . . . . .
-                 . . N . . . . . . .`,
-
-                // 3x2 grid
+                // 2x3 grid
                 `N o N = N . N o N = N
                  o . . . . . o . . . .
                  N o N = N . N o N = N
@@ -333,71 +325,31 @@ class CrossMathGame {
                 // Merdiven
                 `N o N = N . . . .
                  o . . . . . . . .
-                 N . N o N = N . .
+                 N o N = N . . . .
                  = . o . . . . . .
-                 N . N . N o N = N
-                 . . = . o . . . .
-                 . . N . N . . . .
-                 . . . . = . . . .
-                 . . . . N . . . .`,
+                 N . N o N = N . .
+                 . . = . . . . . .
+                 . . N . . . . . .`,
 
                 // H şekli
                 `N . . . N . .
                  o . . . o . .
-                 N o N = N . .
-                 o . o . o . .
-                 N . N o N = N
-                 = . = . = . .
-                 N . N . N . .`
-            ],
+                 N o N o N = N
+                 o . . . o . .
+                 N . . . N . .
+                 = . . . = . .
+                 N . . . N . .`,
 
-            // Kubo mode templates (12-16 denklem)
-            kubo: [
-                // 3x3 grid
+                // Büyük grid
                 `N o N = N . N o N = N
-                 o . . . . . o . . . .
+                 o . o . . . o . o . .
                  N o N = N . N o N = N
                  = . = . . . = . = . .
-                 N . N . . . N . N . .
-                 . . . . . . . . . . .
-                 N o N = N . N o N = N
-                 o . . . . . o . . . .
-                 N o N = N . N o N = N
-                 = . = . . . = . = . .
-                 N . N . . . N . N . .`,
-
-                // Yoğun kesişim
-                `N o N = N . . . .
-                 o . o . . . . . .
-                 N o N = N . . . .
-                 = . = . o . . . .
-                 N . N o N = N . .
-                 . . o . = . . . .
-                 . . N o N = N . .
-                 . . = . o . . . .
-                 . . N . N . . . .
-                 . . . . = . . . .
-                 . . . . N . . . .`,
-
-                // Çift kol
-                `N o N = N . . . N o N = N
-                 o . . . . . . . o . . . .
-                 N . . . . . . . N . . . .
-                 o . . . . . . . o . . . .
-                 N o N = N . . . N o N = N
-                 = . . . . . . . = . . . .
-                 N . . . . . . . N . . . .`,
-
-                // Mega grid
-                `N o N = N . N o N = N . N o N = N
-                 o . . . . . o . . . . . o . . . .
-                 N o N = N . N o N = N . N o N = N
-                 = . = . . . = . = . . . = . = . .
-                 N . N . . . N . N . . . N . N . .`
+                 N . N . . . N . N . .`
             ]
         };
 
-        const modeKey = modeIndex === 2 ? 'hard' : (modeIndex === 3 ? 'extreme' : 'kubo');
+        const modeKey = modeIndex === 2 ? 'hard' : 'extreme';
         return templates[modeKey];
     }
 
@@ -1164,7 +1116,7 @@ class CrossMathGame {
     displayHighScores() {
         const container = document.getElementById('scores-list');
         container.innerHTML = '';
-        const modes = ['easy', 'medium', 'hard', 'extreme', 'kubo'];
+        const modes = ['easy', 'medium', 'hard', 'extreme'];
         let hasScores = false;
 
         modes.forEach(mode => {

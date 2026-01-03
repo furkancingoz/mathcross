@@ -12,26 +12,22 @@
     --warning: #FF9800;
 }
 
-/* Light Mode - Klasik Gazete Bulmacası Teması */
+/* Light Mode - Gazete Bulmacası Teması */
 body.light-mode {
-    --bg: #F5F0E6;
-    --card: #FFFEF9;
-    --card-alt: #F0EBE0;
+    --bg: #E8E0D0;
+    --card: #FFFBF0;
+    --card-alt: #F5EFE0;
     --text: #1A1A1A;
     --text-secondary: #4A4A4A;
     --text-muted: #7A7A7A;
-    --border: #D4C9B8;
-    --grid-bg: #FFFEF9;
-    --cell-number: #FFF9E6;
-    --cell-number-text: #2C2416;
-    --cell-blank: #FFFFFF;
-    --cell-blank-border: #8B7355;
-    --cell-result: #E8F4E8;
-    --cell-result-text: #1B5E20;
-    --cell-operator: transparent;
-    --cell-operator-text: #333333;
-    --cell-valid: #C8E6C9;
-    --cell-valid-text: #1B5E20;
+    --border: #8B7355;
+    --grid-bg: #FEF9E7;
+    --grid-border: #5A4A3A;
+    --cell-bg: #FEF3C7;
+    --cell-border: #8B7355;
+    --cell-text: #2C2416;
+    --cell-input-bg: #FFFFFF;
+    --cell-input-border: #5A4A3A;
     --void-bg: transparent;
 }
 
@@ -44,22 +40,18 @@ body.dark-mode {
     --text-secondary: #B0B0B0;
     --text-muted: #757575;
     --border: #404040;
-    --grid-bg: #252525;
-    --cell-number: #3D3420;
-    --cell-number-text: #FFE082;
-    --cell-blank: #2A2A2A;
-    --cell-blank-border: #8B7355;
-    --cell-result: #1B3D1B;
-    --cell-result-text: #81C784;
-    --cell-operator: transparent;
-    --cell-operator-text: #CCCCCC;
-    --cell-valid: #1B5E20;
-    --cell-valid-text: #A5D6A7;
+    --grid-bg: #2A2520;
+    --grid-border: #5A5040;
+    --cell-bg: #3D3420;
+    --cell-border: #5A4A3A;
+    --cell-text: #E8D8B8;
+    --cell-input-bg: #1A1A18;
+    --cell-input-border: #7A6A5A;
     --void-bg: transparent;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Courier New', Courier, monospace;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -89,7 +81,7 @@ body {
     z-index: 20;
 }
 
-/* Overlay ekranlar (pause, level complete, game over, wrong answer) */
+/* Overlay ekranlar */
 .overlay {
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(10px);
@@ -131,15 +123,22 @@ body {
 }
 
 .game-title {
-    font-size: 40px;
-    font-weight: 800;
-    letter-spacing: -1px;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: 2px;
     margin-bottom: 4px;
-    color: var(--primary);
+    color: #2C1810;
+}
+
+body.dark-mode .game-title {
+    color: #E8D8B8;
 }
 
 .subtitle {
+    font-family: 'Georgia', serif;
     font-size: 14px;
+    font-style: italic;
     color: var(--text-secondary);
     margin-bottom: 40px;
 }
@@ -167,8 +166,8 @@ body {
     align-items: center;
     gap: 14px;
     background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
     padding: 14px 16px;
     cursor: pointer;
     transition: transform 0.15s, box-shadow 0.15s;
@@ -183,6 +182,7 @@ body {
 .mode-info { flex: 1; }
 .mode-name {
     display: block;
+    font-family: 'Georgia', serif;
     font-size: 16px;
     font-weight: 600;
     color: var(--text);
@@ -229,7 +229,7 @@ body {
 .score-item {
     background: var(--card);
     padding: 6px 12px;
-    border-radius: 16px;
+    border-radius: 4px;
     font-size: 12px;
     color: var(--text-secondary);
     border: 1px solid var(--border);
@@ -247,23 +247,23 @@ body {
 
 /* ========== GAME SCREEN ========== */
 #game-screen {
-    padding: 12px;
-    padding-top: max(12px, env(safe-area-inset-top));
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    padding: 8px;
+    padding-top: max(8px, env(safe-area-inset-top));
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
 }
 
 .game-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .header-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 19px;
-    border: 1px solid var(--border);
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    border: 2px solid var(--border);
     background: var(--card);
     color: var(--text);
     font-size: 16px;
@@ -299,6 +299,7 @@ body {
 }
 
 .header-item .value {
+    font-family: 'Courier New', monospace;
     font-size: 18px;
     font-weight: 700;
     color: var(--text);
@@ -317,7 +318,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .progress-bar {
@@ -359,100 +360,103 @@ body {
     align-items: center;
     min-height: 0;
     overflow: auto;
-    padding: 8px;
+    padding: 4px;
 }
 
-/* Puzzle Grid - Klasik Crossword Izgarası */
+/* ========== PUZZLE GRID - GAZETE BULMACASI STİLİ ========== */
 #puzzle-grid {
     display: grid;
     gap: 0;
     background: var(--grid-bg);
-    padding: 12px;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    border: 2px solid var(--border);
+    padding: 2px;
+    border: 3px solid var(--grid-border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 .puzzle-cell {
-    width: clamp(40px, 12vw, 52px);
-    height: clamp(40px, 12vw, 52px);
+    width: clamp(28px, 7vw, 38px);
+    height: clamp(28px, 7vw, 38px);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(16px, 4vw, 22px);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(14px, 3.5vw, 18px);
     font-weight: 700;
-    transition: all 0.15s ease;
+    transition: all 0.1s ease;
     user-select: none;
+    border: 1px solid var(--cell-border);
+    background: var(--cell-bg);
 }
 
-/* Void cells - tamamen görünmez */
+/* Void cells - görünmez, kenarlıksız */
 .cell-void {
-    background: transparent;
-    border: none;
+    background: var(--grid-bg);
+    border-color: transparent;
 }
 
-/* Number cells - sarı/bej kutu */
+/* Number cells - bej kutu, koyu sayı */
 .cell-number {
-    background: var(--cell-number);
-    color: var(--cell-number-text);
-    border: 2px solid #B8A078;
-    border-radius: 4px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+    background: var(--cell-bg);
+    color: var(--cell-text);
+    border: 1px solid var(--cell-border);
 }
 
-/* Blank cells - beyaz, kalın kesikli kenarlık */
+/* Blank/Input cells - BEYAZ, kesikli kenarlık */
 .cell-number.blank {
-    background: #FFFEFA;
+    background: var(--cell-input-bg);
     color: var(--text-muted);
-    border: 3px dashed #A08060;
+    border: 2px dashed var(--cell-input-border);
     cursor: pointer;
     font-weight: 500;
-    font-size: clamp(14px, 3.5vw, 18px);
-}
-
-body.dark-mode .cell-number.blank {
-    background: #2A2520;
-    border-color: #7A6A5A;
+    font-size: clamp(12px, 3vw, 15px);
 }
 
 .cell-number.blank:hover {
     border-color: var(--primary);
-    background: #FFF8E1;
+    background: #FFFEF5;
     border-style: solid;
 }
 
+body.dark-mode .cell-number.blank:hover {
+    background: #2A2A28;
+}
+
 .cell-number.blank.drag-over {
-    transform: scale(1.08);
+    transform: scale(1.05);
     border-color: var(--primary);
     border-style: solid;
-    background: #FFF3C4;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background: #FFF8DC;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .cell-number.blank.selected {
     border: 2px solid var(--primary);
-    box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.3);
-    background: #FFF8E1;
+    box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.3);
+    background: #FFFEF5;
 }
 
 .cell-number.blank.filled {
-    background: var(--cell-number);
-    color: var(--cell-number-text);
-    border: 2px solid #B8A078;
+    background: var(--cell-bg);
+    color: var(--cell-text);
+    border: 1px solid var(--cell-border);
     font-weight: 700;
 }
 
-/* Validation - yeşil */
+/* Validation - hafif yeşil tint */
 .cell-number.valid,
 .cell-number.blank.filled.valid {
-    background: var(--cell-valid) !important;
-    color: var(--cell-valid-text) !important;
-    border-color: var(--success) !important;
+    background: #E8F5E9 !important;
+    border-color: #4CAF50 !important;
+}
+
+body.dark-mode .cell-number.valid,
+body.dark-mode .cell-number.blank.filled.valid {
+    background: #1B3D1B !important;
+    border-color: #4CAF50 !important;
 }
 
 .cell-number.correct {
-    background: var(--cell-valid) !important;
-    color: var(--cell-valid-text) !important;
+    background: #C8E6C9 !important;
     border-color: var(--success) !important;
 }
 
@@ -463,104 +467,89 @@ body.dark-mode .cell-number.blank {
     animation: shake 0.4s ease;
 }
 
-/* Result cells - pastel/mat yeşil (sage green) */
+/* Result cells - BEJ, yeşil yok artık */
 .cell-result {
-    background: #E8EFE6;
-    color: #3D5A3D;
-    border: 2px solid #9CB89C;
-    border-radius: 4px;
+    background: var(--cell-bg);
+    color: var(--cell-text);
+    border: 1px solid var(--cell-border);
     font-weight: 800;
 }
 
-body.dark-mode .cell-result {
-    background: #2A3D2A;
-    color: #A8C8A8;
-    border-color: #4A6A4A;
-}
-
 .cell-result.equation-valid {
-    background: #D4E8D4 !important;
-    color: #2E5A2E !important;
-    border-color: #5A9A5A !important;
+    background: #E8F5E9 !important;
+    border-color: #4CAF50 !important;
 }
 
-/* Operator cells - hafif arka plan ile entegre */
+body.dark-mode .cell-result.equation-valid {
+    background: #1B3D1B !important;
+}
+
+/* Operator cells - BEJ, kutu içinde */
 .cell-operator {
-    background: rgba(0,0,0,0.03);
-    color: var(--cell-operator-text);
-    font-size: clamp(18px, 5vw, 24px);
-    font-weight: 600;
-    border-radius: 4px;
-}
-
-body.dark-mode .cell-operator {
-    background: rgba(255,255,255,0.05);
-}
-
-/* Equals - hafif arka plan */
-.cell-equals {
-    background: rgba(0,0,0,0.03);
-    color: var(--cell-operator-text);
-    font-size: clamp(18px, 5vw, 24px);
+    background: var(--cell-bg);
+    color: var(--cell-text);
+    border: 1px solid var(--cell-border);
+    font-size: clamp(14px, 3.5vw, 18px);
     font-weight: 700;
-    border-radius: 4px;
 }
 
-body.dark-mode .cell-equals {
-    background: rgba(255,255,255,0.05);
+/* Equals - BEJ, kutu içinde */
+.cell-equals {
+    background: var(--cell-bg);
+    color: var(--cell-text);
+    border: 1px solid var(--cell-border);
+    font-size: clamp(14px, 3.5vw, 18px);
+    font-weight: 700;
 }
 
-/* Number Bank - Sayı Havuzu */
+/* ========== NUMBER BANK ========== */
 #number-bank {
     background: var(--card);
-    padding: 16px;
-    border-radius: 8px;
-    margin-top: 16px;
+    padding: 12px;
     border: 2px solid var(--border);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-top: 10px;
 }
 
 .bank-label {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 1px;
     text-align: center;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
     border-bottom: 1px solid var(--border);
 }
 
 #bank-numbers {
     display: flex;
-    gap: 10px;
+    gap: 6px;
     flex-wrap: wrap;
     justify-content: center;
 }
 
 .bank-number {
-    width: clamp(44px, 12vw, 54px);
-    height: clamp(44px, 12vw, 54px);
+    width: clamp(36px, 9vw, 44px);
+    height: clamp(36px, 9vw, 44px);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(18px, 4.5vw, 22px);
+    font-family: 'Courier New', monospace;
+    font-size: clamp(16px, 4vw, 20px);
     font-weight: 700;
-    background: var(--cell-number);
-    border: 2px solid #B8A078;
-    border-radius: 6px;
-    color: var(--cell-number-text);
+    background: var(--cell-bg);
+    border: 2px solid var(--cell-border);
+    color: var(--cell-text);
     cursor: grab;
     transition: all 0.15s ease;
     user-select: none;
     touch-action: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .bank-number:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
     border-color: var(--primary);
 }
 
@@ -577,30 +566,31 @@ body.dark-mode .cell-equals {
     background: var(--primary);
     border-color: var(--primary);
     color: white;
-    box-shadow: 0 4px 12px rgba(74, 144, 217, 0.4);
+    box-shadow: 0 3px 8px rgba(74, 144, 217, 0.4);
 }
 
 .bank-number.used {
     opacity: 0.25;
     cursor: not-allowed;
-    transform: scale(0.85);
+    transform: scale(0.9);
     box-shadow: none;
 }
 
 /* Drag Preview */
 .drag-preview {
     position: fixed;
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
     display: none;
     justify-content: center;
     align-items: center;
-    font-size: 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 18px;
     font-weight: 700;
     background: var(--primary);
     color: white;
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(74, 144, 217, 0.4);
+    border: 2px solid #2A5A9A;
+    box-shadow: 0 4px 12px rgba(74, 144, 217, 0.4);
     pointer-events: none;
     z-index: 1000;
     transform: translate(-50%, -50%);
@@ -615,14 +605,13 @@ body.dark-mode .cell-equals {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 12px;
+    margin-top: 10px;
 }
 
 .iq-display {
     background: var(--card);
-    padding: 10px 16px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border: 2px solid var(--border);
 }
 
 .iq-label {
@@ -635,7 +624,8 @@ body.dark-mode .cell-equals {
 }
 
 .iq-value {
-    font-size: 24px;
+    font-family: 'Courier New', monospace;
+    font-size: 22px;
     font-weight: 800;
     color: var(--primary);
 }
@@ -643,11 +633,11 @@ body.dark-mode .cell-equals {
 .check-button {
     background: var(--success);
     border: none;
-    padding: 12px 24px;
-    font-size: 15px;
+    padding: 10px 20px;
+    font-size: 14px;
     font-weight: 600;
     color: white;
-    border-radius: 10px;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.15s ease;
 }
@@ -659,7 +649,7 @@ body.dark-mode .cell-equals {
 /* ========== POPUPS ========== */
 .popup {
     background: var(--card);
-    border-radius: 20px;
+    border: 3px solid var(--border);
     padding: 24px 20px;
     text-align: center;
     max-width: 280px;
@@ -682,6 +672,7 @@ body.dark-mode .cell-equals {
 }
 
 .popup h2 {
+    font-family: 'Georgia', serif;
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 16px;
@@ -699,6 +690,7 @@ body.dark-mode .cell-equals {
 
 .stat-value {
     display: block;
+    font-family: 'Courier New', monospace;
     font-size: 20px;
     font-weight: 700;
     color: var(--text);
@@ -720,6 +712,7 @@ body.dark-mode .cell-equals {
 .final-iq { margin-bottom: 16px; }
 
 .big-iq {
+    font-family: 'Courier New', monospace;
     font-size: 52px;
     font-weight: 800;
     color: var(--primary);
@@ -756,7 +749,7 @@ body.dark-mode .cell-equals {
     font-size: 15px;
     font-weight: 600;
     color: white;
-    border-radius: 10px;
+    border-radius: 4px;
     cursor: pointer;
 }
 
@@ -764,12 +757,12 @@ body.dark-mode .cell-equals {
 
 .btn-secondary {
     background: var(--card-alt);
-    border: 1px solid var(--border);
-    padding: 12px;
+    border: 2px solid var(--border);
+    padding: 10px;
     font-size: 15px;
     font-weight: 600;
     color: var(--text);
-    border-radius: 10px;
+    border-radius: 4px;
     cursor: pointer;
 }
 
@@ -780,7 +773,7 @@ body.dark-mode .cell-equals {
     font-size: 15px;
     font-weight: 600;
     color: var(--danger);
-    border-radius: 10px;
+    border-radius: 4px;
     cursor: pointer;
 }
 
@@ -800,15 +793,24 @@ body.dark-mode .cell-equals {
     .stats { gap: 16px; }
 
     .puzzle-cell {
-        width: clamp(28px, 7vw, 36px);
-        height: clamp(28px, 7vw, 36px);
-        font-size: clamp(12px, 3vw, 15px);
+        width: clamp(22px, 6vw, 30px);
+        height: clamp(22px, 6vw, 30px);
+        font-size: clamp(11px, 2.8vw, 14px);
     }
 
     .bank-number {
-        width: clamp(36px, 10vw, 44px);
-        height: clamp(36px, 10vw, 44px);
-        font-size: clamp(14px, 3.5vw, 17px);
+        width: clamp(32px, 8vw, 38px);
+        height: clamp(32px, 8vw, 38px);
+        font-size: clamp(14px, 3.5vw, 16px);
+    }
+}
+
+/* Larger grids need smaller cells */
+@media (max-width: 500px) {
+    .puzzle-cell {
+        width: clamp(24px, 6vw, 32px);
+        height: clamp(24px, 6vw, 32px);
+        font-size: clamp(12px, 3vw, 15px);
     }
 }
 
@@ -819,9 +821,9 @@ body.dark-mode .cell-equals {
     }
     .subtitle { margin-bottom: 24px; }
     .high-scores { margin-top: 24px; }
-    #game-screen { padding: 8px; }
-    .game-header { margin-bottom: 6px; }
-    .level-progress { margin-bottom: 8px; }
-    #number-bank { margin-top: 8px; padding: 10px; }
-    .game-footer { margin-top: 8px; }
+    #game-screen { padding: 6px; }
+    .game-header { margin-bottom: 4px; }
+    .level-progress { margin-bottom: 6px; }
+    #number-bank { margin-top: 6px; padding: 8px; }
+    .game-footer { margin-top: 6px; }
 }
