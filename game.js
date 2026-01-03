@@ -255,92 +255,91 @@ class CrossMathGame {
 
         const config = this.modes[this.currentMode];
         const levelFactor = (this.currentLevel - 1) / (this.maxLevels - 1);
+        const modeIndex = ['easy', 'medium', 'hard', 'extreme', 'kubo'].indexOf(this.currentMode);
 
-        // Mode'a göre boşluk sayısı (2x2 grid = 4 ana sayı, max 3 boşluk)
-        const modeBlankCount = {
-            easy: [1, 2],      // 1-2 boşluk
-            medium: [1, 2],    // 1-2 boşluk
-            hard: [2, 3],      // 2-3 boşluk
-            extreme: [2, 3],   // 2-3 boşluk
-            kubo: [3, 3]       // 3 boşluk (max)
-        };
+        // Grid boyutu: mode ve level'a göre
+        // Easy: 2x2, Medium: 2x2-3x3, Hard: 3x3, Extreme: 3x3-4x4, Kubo: 4x4
+        let gridSize;
+        if (modeIndex <= 1) {
+            gridSize = levelFactor < 0.5 ? 2 : (Math.random() < 0.7 ? 2 : 3);
+        } else if (modeIndex <= 2) {
+            gridSize = levelFactor < 0.3 ? 2 : 3;
+        } else if (modeIndex <= 3) {
+            gridSize = levelFactor < 0.5 ? 3 : (Math.random() < 0.6 ? 3 : 4);
+        } else {
+            gridSize = levelFactor < 0.3 ? 3 : 4;
+        }
 
-        const [minBlanks, maxBlanks] = modeBlankCount[this.currentMode] || [1, 2];
-        const blankCount = minBlanks + Math.floor(levelFactor * (maxBlanks - minBlanks + 1));
+        // Boşluk oranı
+        const blankRatio = 0.3 + modeIndex * 0.1 + levelFactor * 0.2;
 
-        this.buildSimpleGrid(config, blankCount);
+        this.buildGrid(gridSize, config, blankRatio);
     }
 
-    // Basit ve güvenilir 3x3 grid sistemi
-    buildSimpleGrid(config, blankCount) {
+    // Dinamik NxN grid sistemi (2x2, 3x3, 4x4)
+    buildGrid(size, config, blankRatio) {
         this.solution = {};
         this.equations = [];
 
-        // 3x3 sayı gridi (toplam 9 sayı)
-        // Her satır: A op B = C (soldan sağa hesaplama)
-        // Her sütun: D op E = F (yukarıdan aşağı hesaplama)
-
         const ops = config.ops;
-        const maxNum = config.maxNum;
+        const maxNum = Math.min(config.maxNum, 20);
 
-        // Grid yapısı:
-        // [0,0] [op] [0,1] [=] [0,2]
-        // [op]       [op]
-        // [1,0] [op] [1,1] [=] [1,2]
-        // [=]        [=]
-        // [2,0]      [2,1]
-
+        // NxN sayı matrisi oluştur
+        let numbers = [];
+        let hOps = [];
+        let vOps = [];
+        let hResults = [];
+        let vResults = [];
         let valid = false;
-        let numbers, hOps, vOps, hResults, vResults;
         let attempts = 0;
 
         while (!valid && attempts < 100) {
             attempts++;
+            valid = true;
 
-            // 2x2 ana sayıları rastgele üret
-            numbers = [
-                [0, 0],
-                [0, 0]
-            ];
-
-            for (let i = 0; i < 2; i++) {
-                for (let j = 0; j < 2; j++) {
-                    numbers[i][j] = this.randInt(1, Math.min(maxNum, 15));
+            // Sayıları üret
+            numbers = [];
+            for (let i = 0; i < size; i++) {
+                numbers[i] = [];
+                for (let j = 0; j < size; j++) {
+                    numbers[i][j] = this.randInt(1, maxNum);
                 }
             }
 
-            // Yatay operatörler (2 satır için)
-            hOps = [
-                this.pickSafeOp(ops, numbers[0][0], numbers[0][1]),
-                this.pickSafeOp(ops, numbers[1][0], numbers[1][1])
-            ];
+            // Yatay operatörler ve sonuçlar
+            hOps = [];
+            hResults = [];
+            for (let i = 0; i < size; i++) {
+                hOps[i] = [];
+                let result = numbers[i][0];
+                for (let j = 0; j < size - 1; j++) {
+                    const op = this.pickSafeOp(ops, result, numbers[i][j + 1]);
+                    hOps[i][j] = op;
+                    result = this.applyOp(result, op, numbers[i][j + 1]);
+                }
+                hResults[i] = result;
+                if (result < 0 || result > 99 || !Number.isInteger(result)) valid = false;
+            }
 
-            // Dikey operatörler (2 sütun için)
-            vOps = [
-                this.pickSafeOp(ops, numbers[0][0], numbers[1][0]),
-                this.pickSafeOp(ops, numbers[0][1], numbers[1][1])
-            ];
-
-            // Yatay sonuçları hesapla (soldan sağa - işlem önceliği YOK)
-            hResults = [
-                this.applyOp(numbers[0][0], hOps[0], numbers[0][1]),
-                this.applyOp(numbers[1][0], hOps[1], numbers[1][1])
-            ];
-
-            // Dikey sonuçları hesapla (yukarıdan aşağı - işlem önceliği YOK)
-            vResults = [
-                this.applyOp(numbers[0][0], vOps[0], numbers[1][0]),
-                this.applyOp(numbers[0][1], vOps[1], numbers[1][1])
-            ];
-
-            // Tüm sonuçlar pozitif ve tam sayı mı kontrol et
-            valid = hResults.every(r => r >= 0 && r <= 99 && Number.isInteger(r)) &&
-                    vResults.every(r => r >= 0 && r <= 99 && Number.isInteger(r));
+            // Dikey operatörler ve sonuçlar
+            vOps = [];
+            vResults = [];
+            for (let j = 0; j < size; j++) {
+                vOps[j] = [];
+                let result = numbers[0][j];
+                for (let i = 0; i < size - 1; i++) {
+                    const op = this.pickSafeOp(ops, result, numbers[i + 1][j]);
+                    vOps[j][i] = op;
+                    result = this.applyOp(result, op, numbers[i + 1][j]);
+                }
+                vResults[j] = result;
+                if (result < 0 || result > 99 || !Number.isInteger(result)) valid = false;
+            }
         }
 
-        // Grid'i oluştur (5 satır x 5 sütun)
-        this.gridRows = 5;
-        this.gridCols = 5;
+        // Grid boyutları
+        this.gridRows = size * 2 + 1;
+        this.gridCols = size * 2 + 1;
         this.grid = [];
 
         for (let r = 0; r < this.gridRows; r++) {
@@ -350,53 +349,58 @@ class CrossMathGame {
             }
         }
 
-        // Sayıları yerleştir
-        const numPositions = [
-            { r: 0, c: 0, val: numbers[0][0] },
-            { r: 0, c: 2, val: numbers[0][1] },
-            { r: 0, c: 4, val: hResults[0] },
-            { r: 2, c: 0, val: numbers[1][0] },
-            { r: 2, c: 2, val: numbers[1][1] },
-            { r: 2, c: 4, val: hResults[1] },
-            { r: 4, c: 0, val: vResults[0] },
-            { r: 4, c: 2, val: vResults[1] }
-        ];
+        // Ana sayıları yerleştir
+        const mainPositions = [];
+        for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size; j++) {
+                const r = i * 2;
+                const c = j * 2;
+                this.grid[r][c] = { type: 'number', value: numbers[i][j], pos: `${r}-${c}` };
+                mainPositions.push(`${r}-${c}`);
+            }
+        }
 
-        numPositions.forEach(({ r, c, val }) => {
-            this.grid[r][c] = { type: 'number', value: val, pos: `${r}-${c}` };
-        });
+        // Yatay operatörler, = ve sonuçlar
+        for (let i = 0; i < size; i++) {
+            const r = i * 2;
+            for (let j = 0; j < size - 1; j++) {
+                this.grid[r][j * 2 + 1] = { type: 'operator', value: hOps[i][j] };
+            }
+            this.grid[r][(size - 1) * 2 + 1] = { type: 'equals', value: '=' };
+            this.grid[r][size * 2] = { type: 'result', value: hResults[i], pos: `${r}-${size * 2}` };
+        }
 
-        // Sonuçları result olarak işaretle
-        this.grid[0][4] = { type: 'result', value: hResults[0], pos: '0-4' };
-        this.grid[2][4] = { type: 'result', value: hResults[1], pos: '2-4' };
-        this.grid[4][0] = { type: 'result', value: vResults[0], pos: '4-0' };
-        this.grid[4][2] = { type: 'result', value: vResults[1], pos: '4-2' };
-
-        // Operatörleri yerleştir
-        this.grid[0][1] = { type: 'operator', value: hOps[0] };
-        this.grid[0][3] = { type: 'equals', value: '=' };
-        this.grid[2][1] = { type: 'operator', value: hOps[1] };
-        this.grid[2][3] = { type: 'equals', value: '=' };
-        this.grid[1][0] = { type: 'operator', value: vOps[0] };
-        this.grid[1][2] = { type: 'operator', value: vOps[1] };
-        this.grid[3][0] = { type: 'equals', value: '=' };
-        this.grid[3][2] = { type: 'equals', value: '=' };
+        // Dikey operatörler, = ve sonuçlar
+        for (let j = 0; j < size; j++) {
+            const c = j * 2;
+            for (let i = 0; i < size - 1; i++) {
+                this.grid[i * 2 + 1][c] = { type: 'operator', value: vOps[j][i] };
+            }
+            this.grid[(size - 1) * 2 + 1][c] = { type: 'equals', value: '=' };
+            this.grid[size * 2][c] = { type: 'result', value: vResults[j], pos: `${size * 2}-${c}` };
+        }
 
         // Denklemleri kaydet
-        this.equations = [
-            { type: 'h', cells: ['0-0', '0-2'], ops: [hOps[0]], result: hResults[0], resultPos: '0-4' },
-            { type: 'h', cells: ['2-0', '2-2'], ops: [hOps[1]], result: hResults[1], resultPos: '2-4' },
-            { type: 'v', cells: ['0-0', '2-0'], ops: [vOps[0]], result: vResults[0], resultPos: '4-0' },
-            { type: 'v', cells: ['0-2', '2-2'], ops: [vOps[1]], result: vResults[1], resultPos: '4-2' }
-        ];
+        for (let i = 0; i < size; i++) {
+            const cells = [];
+            for (let j = 0; j < size; j++) cells.push(`${i * 2}-${j * 2}`);
+            this.equations.push({
+                type: 'h', cells, ops: hOps[i], result: hResults[i], resultPos: `${i * 2}-${size * 2}`
+            });
+        }
+        for (let j = 0; j < size; j++) {
+            const cells = [];
+            for (let i = 0; i < size; i++) cells.push(`${i * 2}-${j * 2}`);
+            this.equations.push({
+                type: 'v', cells, ops: vOps[j], result: vResults[j], resultPos: `${size * 2}-${j * 2}`
+            });
+        }
 
-        // Boşlukları belirle (en az 1 ipucu sayı kalmalı)
-        const mainNumberPositions = ['0-0', '0-2', '2-0', '2-2'];
-        this.shuffle(mainNumberPositions);
-
-        // Max 3 boşluk - her zaman en az 1 sayı görünsün
-        const actualBlanks = Math.min(blankCount, 3);
-        const blanks = mainNumberPositions.slice(0, actualBlanks);
+        // Boşlukları belirle (en az 1 sayı görünsün)
+        this.shuffle(mainPositions);
+        const totalMain = size * size;
+        const numBlanks = Math.min(totalMain - 1, Math.max(1, Math.floor(totalMain * blankRatio)));
+        const blanks = mainPositions.slice(0, numBlanks);
 
         blanks.forEach(pos => {
             const [r, c] = pos.split('-').map(Number);
