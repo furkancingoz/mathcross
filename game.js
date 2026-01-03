@@ -49,21 +49,62 @@ class CrossMathGame {
 
     setupEventListeners() {
         document.querySelectorAll('.mode-btn').forEach(btn => {
-            btn.addEventListener('click', () => this.startGame(btn.dataset.mode));
+            btn.addEventListener('click', () => {
+                console.log('Mode button clicked:', btn.dataset.mode);
+                this.startGame(btn.dataset.mode);
+            });
         });
 
-        document.getElementById('theme-toggle').addEventListener('click', () => this.toggleTheme());
-        document.getElementById('theme-toggle-game').addEventListener('click', () => this.toggleTheme());
-        document.getElementById('back-btn').addEventListener('click', () => this.showPause());
-        document.getElementById('hint-btn').addEventListener('click', () => this.useHint());
-        document.getElementById('check-btn').addEventListener('click', () => this.checkSolution());
-        document.getElementById('resume-btn').addEventListener('click', () => this.resumeGame());
-        document.getElementById('restart-btn').addEventListener('click', () => this.restartLevel());
-        document.getElementById('quit-btn').addEventListener('click', () => this.quitToMenu());
-        document.getElementById('next-level-btn').addEventListener('click', () => this.nextLevel());
-        document.getElementById('play-again-btn').addEventListener('click', () => this.playAgain());
-        document.getElementById('menu-btn').addEventListener('click', () => this.quitToMenu());
-        document.getElementById('try-again-btn').addEventListener('click', () => this.hideScreen('wrong-answer'));
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            console.log('Theme toggle clicked');
+            this.toggleTheme();
+        });
+        document.getElementById('theme-toggle-game').addEventListener('click', () => {
+            console.log('Theme toggle game clicked');
+            this.toggleTheme();
+        });
+        document.getElementById('back-btn').addEventListener('click', () => {
+            console.log('Back button clicked');
+            this.showPause();
+        });
+        document.getElementById('hint-btn').addEventListener('click', () => {
+            console.log('Hint button clicked');
+            this.useHint();
+        });
+        document.getElementById('check-btn').addEventListener('click', () => {
+            console.log('Check button clicked');
+            console.log('Solution:', this.solution);
+            console.log('User answers:', this.userAnswers);
+            this.checkSolution();
+        });
+        document.getElementById('resume-btn').addEventListener('click', () => {
+            console.log('Resume button clicked');
+            this.resumeGame();
+        });
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            console.log('Restart button clicked');
+            this.restartLevel();
+        });
+        document.getElementById('quit-btn').addEventListener('click', () => {
+            console.log('Quit button clicked');
+            this.quitToMenu();
+        });
+        document.getElementById('next-level-btn').addEventListener('click', () => {
+            console.log('Next level button clicked');
+            this.nextLevel();
+        });
+        document.getElementById('play-again-btn').addEventListener('click', () => {
+            console.log('Play again button clicked');
+            this.playAgain();
+        });
+        document.getElementById('menu-btn').addEventListener('click', () => {
+            console.log('Menu button clicked');
+            this.quitToMenu();
+        });
+        document.getElementById('try-again-btn').addEventListener('click', () => {
+            console.log('Try again button clicked');
+            this.hideScreen('wrong-answer');
+        });
 
         document.addEventListener('keydown', (e) => this.handleKeypress(e));
     }
